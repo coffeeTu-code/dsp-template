@@ -1,0 +1,38 @@
+// greeter.proto 问候语协议
+
+syntax = "proto3";
+
+package base;
+
+option go_package = "dsp-template/api/base/base;base";
+
+message BaseRequest {
+    string request_id = 1;
+    string ip = 2; // 上游服务ip
+    map<string, string> abtest = 3; // k:v
+    bool debug = 4;
+    bool openlog = 5;
+    int64 tmax = 6; // ms
+}
+
+message BaseResponse {
+    string ip = 1; // 本机ip
+    StatusBase status = 2;
+    int64 elapsed = 3; // ms
+    map<string, string> abtested = 4; // used k:v
+    map<string, string> debugmsg = 5; // debug list
+    string errormsg = 6;
+}
+
+enum StatusBase {
+    Default = 0;
+    Success = 1;
+    Fail = 2;
+}
+
+message BaseMetrics {
+    string region = 1;
+    string ip = 2;
+    string namespace = 3;
+    string subsystem = 4;
+}

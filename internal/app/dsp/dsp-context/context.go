@@ -1,17 +1,23 @@
 package dsp_context
 
 import (
-	mortb "dsp-template/api/adx/madx/go"
+	"dsp-template/api/adx/madx"
 	"dsp-template/api/base"
+	"dsp-template/api/dbstruct"
+	dsp_metrics "dsp-template/internal/app/dsp/dsp-metrics"
 	dsp_status "dsp-template/internal/app/dsp/dsp-status"
 )
 
 type DspContext struct {
-	Request  *mortb.MOrtbRequest
-	Response *mortb.MOrtbResponse
+	Request  *madx.MOrtbRequest
+	Response *madx.MOrtbResponse
 
-	RequestBase  *base.RequestBase
-	ResponseBase *base.ResponseBase
+	RequestBase  *base.BaseRequest
+	ResponseBase *base.BaseResponse
 
 	ModelStatus dsp_status.DspStatus
+
+	MetricsCtx *dsp_metrics.DspMetricsContext
+
+	Feature *dbstruct.Feature
 }
