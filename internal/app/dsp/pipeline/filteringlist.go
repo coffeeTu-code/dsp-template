@@ -11,18 +11,21 @@ import (
 
 func NewFilteringListPipeline() *FilteringListPipeline {
 	return &FilteringListPipeline{
-		funcAppFilter: map[dsp_status.DspStatus]base_mediafilter.MediaHardFilter{
-			dsp_status.DspStatusMediaHardFilterSize:        base_mediafilter.MediaHardFilterSize(),
+		funcBaseFilter: map[dsp_status.DspStatus]base_mediafilter.MediaHardFilter{
 			dsp_status.DspStatusMediaHardFilterTraffic:     base_mediafilter.MediaHardFilterTraffic(),
 			dsp_status.DspStatusMediaHardFilterCountry:     base_mediafilter.MediaHardFilterCountry(),
-			dsp_status.DspStatusMediaHardFilterUA:          base_mediafilter.MediaHardFilterUA(),
-			dsp_status.DspStatusMediaHardFilterDeviceType:  base_mediafilter.MediaHardFilterDeviceType(deviceTypeWhiteTableOption),
+			dsp_status.DspStatusMediaHardFilterBidCache:    base_mediafilter.MediaHardFilterBidCache(bidCacheTableOption),
 			dsp_status.DspStatusMediaHardFilterBannerBType: base_mediafilter.MediaHardFilterBannerBType(),
-			dsp_status.DspStatusMediaHardFilterPlatform:    base_mediafilter.MediaHardFilterPlatform(),
-			dsp_status.DspStatusMediaHardFilterDeviceID:    base_mediafilter.MediaHardFilterDeviceID(deviceIDWhiteTableOption),
+			dsp_status.DspStatusMediaHardFilterSize:        base_mediafilter.MediaHardFilterSize(),
+		},
+		funcAppFilter: map[dsp_status.DspStatus]base_mediafilter.MediaHardFilter{
+			dsp_status.DspStatusMediaHardFilterUA:         base_mediafilter.MediaHardFilterUA(),
+			dsp_status.DspStatusMediaHardFilterDeviceType: base_mediafilter.MediaHardFilterDeviceType(deviceTypeWhiteTableOption),
+			dsp_status.DspStatusMediaHardFilterPlatform:   base_mediafilter.MediaHardFilterPlatform(),
+			dsp_status.DspStatusMediaHardFilterDeviceID:   base_mediafilter.MediaHardFilterDeviceID(deviceIDWhiteTableOption),
 		},
 		funcSiteFilter: map[dsp_status.DspStatus]base_mediafilter.MediaHardFilter{
-			dsp_status.DspStatusMediaHardFilterSize: base_mediafilter.MediaHardFilterSize(),
+
 		},
 	}
 }
@@ -30,6 +33,7 @@ func NewFilteringListPipeline() *FilteringListPipeline {
 type FilteringListPipeline struct {
 	funcAppFilter  map[dsp_status.DspStatus]base_mediafilter.MediaHardFilter
 	funcSiteFilter map[dsp_status.DspStatus]base_mediafilter.MediaHardFilter
+	funcBaseFilter map[dsp_status.DspStatus]base_mediafilter.MediaHardFilter
 }
 
 func (pipe *FilteringListPipeline) Description() string {
@@ -39,15 +43,18 @@ func (pipe *FilteringListPipeline) Description() string {
 func (pipe *FilteringListPipeline) Process(ctx *dsp_context.DspContext) (modelStatus dsp_status.DspStatus, modelErr error) {
 
 	var reserved bool
+	reserved = !runMediaHardFilter(ctx, pipe.funcBaseFilter)
+	if !reserved {
+		return ctx.ModelStatus, errors.New(pipe.Description())
+	}
+
 	switch {
 	case isFromApp(ctx):
 		reserved = !runMediaHardFilter(ctx, pipe.funcAppFilter)
 	case isFromSite(ctx):
 		reserved = !runMediaHardFilter(ctx, pipe.funcSiteFilter)
 	default:
-
 	}
-
 	if !reserved {
 		return ctx.ModelStatus, errors.New(pipe.Description())
 	}
@@ -92,6 +99,13 @@ func deviceTypeWhiteTableOption(feature *dbstruct.Feature) bool {
 }
 
 func deviceIDWhiteTableOption(feature *dbstruct.Feature) bool {
+	// read table
+
+	// if exchange in table; return true
+	return true
+}
+
+func bidCacheTableOption(feature *dbstruct.Feature) bool {
 	// read table
 
 	// if exchange in table; return true

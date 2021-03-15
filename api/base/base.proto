@@ -6,15 +6,17 @@ package base;
 
 option go_package = "dsp-template/api/base/base;base";
 
+// 被调用 rpc 服务 推荐集成 context
 message BaseRequest {
     string request_id = 1;
     string ip = 2; // 上游服务ip
     map<string, string> abtest = 3; // k:v
     bool debug = 4;
     bool openlog = 5;
-    int64 tmax = 6; // ms
+    int64 tmax = 6; // ms，超时控制 read context
 }
 
+// 被调服务 timeout 或其他异常情况，可以选填 部分字段 返回上一层
 message BaseResponse {
     string ip = 1; // 本机ip
     StatusBase status = 2;
@@ -29,6 +31,7 @@ enum StatusBase {
     Success = 1;
     Fail = 2;
 }
+// 被调用 rpc 服务 推荐集成 context End
 
 message BaseMetrics {
     string region = 1;

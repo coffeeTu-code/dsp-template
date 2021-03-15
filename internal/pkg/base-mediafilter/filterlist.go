@@ -7,6 +7,7 @@ import (
 
 	"dsp-template/api/base"
 	"dsp-template/api/dbstruct"
+	base_bidcache "dsp-template/internal/pkg/base-bidcache"
 )
 
 /*
@@ -15,6 +16,9 @@ import (
 
 （1）流量字段缺失
 （2）流量字段不合常规
+（3）ip block
+（4）low history roi
+（5）bid cache
 
 */
 
@@ -161,4 +165,25 @@ func isPseudoDeviceID(deviceIds *dbstruct.FDeviceIds) bool {
 		return googleIdExp.MatchString(deviceIds.GoogleAdId)
 	}
 	return false
+}
+
+func MediaHardFilterBidCache(options ...WhiteTableOption) MediaHardFilter {
+	return func(feature *dbstruct.Feature) bool {
+		if reserved(feature, options...) {
+			return false
+		}
+		return isBidCached(feature)
+	}
+}
+
+func isBidCached(feature *dbstruct.Feature) bool {
+	rawParse, err := base_bidcache.BuildQuery(feature, base_bidcache.ReadExchangeConfig(feature.Exchange))
+	if err != nil {
+		return false // 不过滤
+	}
+	block, err := base_bidcache.App().Retrive(rawParse)
+	if err != nil {
+		return false // 查询失败不过滤
+	}
+	return block
 }

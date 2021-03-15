@@ -13,4 +13,5 @@ const (
 	DspStatusMediaHardFilterBannerBType = "block_img"
 	DspStatusMediaHardFilterPlatform    = "os_unuseful"
 	DspStatusMediaHardFilterDeviceID    = "device_in_blacklist"
+	DspStatusMediaHardFilterBidCache    = "bid_cache_filter"
 )

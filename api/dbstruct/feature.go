@@ -19,6 +19,7 @@ type Feature struct {
 	Platform    string
 	CountryCode string
 	Size        []string
+	BidFloor    float64
 	Imp         *FImp
 	DeviceIds   *FDeviceIds
 	Device      *FDevice
@@ -86,6 +87,8 @@ type FUser struct {
 }
 
 type FApp struct {
+	PackageName string
+
 	Cat       []string   `json:"cat,omitempty"`
 	Keywords  string     `json:"keywords,omitempty"`
 	Publisher FPublisher `json:"publisher,omitempty"`
