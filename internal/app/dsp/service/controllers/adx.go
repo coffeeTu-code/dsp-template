@@ -91,13 +91,6 @@ func runDspService(request *madx.MOrtbRequest) (response *madx.MOrtbResponse, er
 		Feature:      base_feature.FeatureFormation(request),
 	}
 
-	for k, v := range newABTest() {
-		ctx.RequestBase.Abtest[k] = v
-	}
-	ctx.RequestBase.RequestId = ctx.Request.ID
-	ctx.RequestBase.Debug = debug()
-	ctx.RequestBase.Openlog = openlog()
-
 	pStart := time.Now()
 	p := pipeline.DistributePipeline(ctx)
 	pErr := p.Process(ctx)
@@ -113,16 +106,4 @@ func runDspService(request *madx.MOrtbRequest) (response *madx.MOrtbResponse, er
 	p.Log(ctx)
 
 	return ctx.Response, pErr
-}
-
-func newABTest() map[string]string {
-	return map[string]string{}
-}
-
-func debug() bool {
-	return false
-}
-
-func openlog() bool {
-	return false
 }

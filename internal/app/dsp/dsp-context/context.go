@@ -4,6 +4,7 @@ import (
 	"dsp-template/api/adx/madx"
 	"dsp-template/api/base"
 	"dsp-template/api/dbstruct"
+	dsp_config "dsp-template/internal/app/dsp/dsp-config"
 	dsp_metrics "dsp-template/internal/app/dsp/dsp-metrics"
 	dsp_status "dsp-template/internal/app/dsp/dsp-status"
 )
@@ -20,4 +21,6 @@ type DspContext struct {
 	MetricsCtx *dsp_metrics.DspMetricsContext
 
 	Feature *dbstruct.Feature
+
+	BidForce *dsp_config.BidForceDevice
 }

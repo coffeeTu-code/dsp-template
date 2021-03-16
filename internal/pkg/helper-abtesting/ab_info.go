@@ -19,8 +19,6 @@ type FlowControl struct {
 	Country     []string `json:"country"`
 	Device      []string `json:"device"`
 	PackageName []string `json:"package_name"`
-	AppId       []int64  `json:"app_id"`
-	UnitId      []int64  `json:"unit_id"`
 }
 
 type ExperimentInfo struct {

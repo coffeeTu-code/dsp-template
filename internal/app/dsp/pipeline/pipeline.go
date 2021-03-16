@@ -18,8 +18,14 @@ func DistributePipeline(ctx *dsp_context.DspContext) *WallTimePipeline {
 	return &WallTimePipeline{
 		Description: "Dsp Serve",
 		Filters: []Processer{
-			NewFilteringListPipeline(),
+			NewFlowDyeingPipeline(),    // abtest kv; dmp;
+			NewFilteringListPipeline(), // feature check; bid cache;
+			NewOfferQueuePipeline(),    // offer list recall;
+			NewCreativeHeapPipeline(),  // creative list search;
+			NewAlgorithmPipeline(),     // algo;
+			NewRenderAdmPipeline(),     // tracking urls; adm;
 		},
+		Logging: NewLoggingPipeline(),
 	}
 }
 

@@ -3,6 +3,7 @@ package base_mediafilter
 import (
 	"math/rand"
 	"regexp"
+	"strconv"
 	"strings"
 
 	"dsp-template/api/base"
@@ -25,7 +26,7 @@ import (
 // filter func 通用过滤逻辑
 // return true 过滤流量
 // return false 保留流量
-type MediaHardFilter func(feature *dbstruct.Feature) bool
+type MediaFilter func(feature *dbstruct.Feature) bool
 
 // options 自定义过滤条件
 // return true 保留流量
@@ -41,7 +42,7 @@ func reserved(feature *dbstruct.Feature, options ...WhiteTableOption) bool {
 	return false
 }
 
-func MediaHardFilterSize(options ...WhiteTableOption) MediaHardFilter {
+func MediaHardFilterSize(options ...WhiteTableOption) MediaFilter {
 	return func(feature *dbstruct.Feature) bool {
 		if reserved(feature, options...) {
 			return false
@@ -53,7 +54,7 @@ func MediaHardFilterSize(options ...WhiteTableOption) MediaHardFilter {
 	}
 }
 
-func MediaHardFilterTraffic(options ...WhiteTableOption) MediaHardFilter {
+func MediaHardFilterTraffic(options ...WhiteTableOption) MediaFilter {
 	return func(feature *dbstruct.Feature) bool {
 		if reserved(feature, options...) {
 			return false
@@ -68,7 +69,7 @@ func MediaHardFilterTraffic(options ...WhiteTableOption) MediaHardFilter {
 	}
 }
 
-func MediaHardFilterCountry(options ...WhiteTableOption) MediaHardFilter {
+func MediaHardFilterCountry(options ...WhiteTableOption) MediaFilter {
 	return func(feature *dbstruct.Feature) bool {
 		if reserved(feature, options...) {
 			return false
@@ -77,7 +78,7 @@ func MediaHardFilterCountry(options ...WhiteTableOption) MediaHardFilter {
 	}
 }
 
-func MediaHardFilterUA(options ...WhiteTableOption) MediaHardFilter {
+func MediaHardFilterUA(options ...WhiteTableOption) MediaFilter {
 	return func(feature *dbstruct.Feature) bool {
 		if reserved(feature, options...) {
 			return false
@@ -102,7 +103,7 @@ func hasDeviceId(deviceIds *dbstruct.FDeviceIds) bool {
 			len(deviceIds.OAIdMD5) > 0)
 }
 
-func MediaHardFilterDeviceType(options ...WhiteTableOption) MediaHardFilter {
+func MediaHardFilterDeviceType(options ...WhiteTableOption) MediaFilter {
 	return func(feature *dbstruct.Feature) bool {
 		if reserved(feature, options...) {
 			return false
@@ -119,7 +120,7 @@ func isNonDeviceType(device *dbstruct.FDevice) bool {
 	return true
 }
 
-func MediaHardFilterBannerBType(options ...WhiteTableOption) MediaHardFilter {
+func MediaHardFilterBannerBType(options ...WhiteTableOption) MediaFilter {
 	return func(feature *dbstruct.Feature) bool {
 		if reserved(feature, options...) {
 			return false
@@ -137,7 +138,7 @@ func isBlockImage(imp *dbstruct.FImp) bool {
 	return false
 }
 
-func MediaHardFilterPlatform(options ...WhiteTableOption) MediaHardFilter {
+func MediaHardFilterPlatform(options ...WhiteTableOption) MediaFilter {
 	return func(feature *dbstruct.Feature) bool {
 		if reserved(feature, options...) {
 			return false
@@ -146,7 +147,7 @@ func MediaHardFilterPlatform(options ...WhiteTableOption) MediaHardFilter {
 	}
 }
 
-func MediaHardFilterDeviceID(options ...WhiteTableOption) MediaHardFilter {
+func MediaHardFilterDeviceID(options ...WhiteTableOption) MediaFilter {
 	return func(feature *dbstruct.Feature) bool {
 		if reserved(feature, options...) {
 			return false
@@ -167,7 +168,7 @@ func isPseudoDeviceID(deviceIds *dbstruct.FDeviceIds) bool {
 	return false
 }
 
-func MediaHardFilterBidCache(options ...WhiteTableOption) MediaHardFilter {
+func MediaHardFilterBidCache(options ...WhiteTableOption) MediaFilter {
 	return func(feature *dbstruct.Feature) bool {
 		if reserved(feature, options...) {
 			return false
@@ -186,4 +187,37 @@ func isBidCached(feature *dbstruct.Feature) bool {
 		return false // 查询失败不过滤
 	}
 	return block
+}
+
+func MediaSoftFilterPackageName(options ...WhiteTableOption) MediaFilter {
+	return func(feature *dbstruct.Feature) bool {
+		if reserved(feature, options...) {
+			return false
+		}
+		if feature.App == nil || len(feature.App.PackageName) == 0 {
+			return true
+		}
+		switch feature.Platform {
+		case base.PlatformAndroid:
+			return !isAndroidPackageName(feature.App.PackageName)
+		case base.PlatformIos:
+			return !isIosPackageName(feature.App.PackageName)
+		default:
+			return false // 非 app 类不过滤
+		}
+	}
+}
+
+func isIosPackageName(pkgName string) bool {
+	_, err := strconv.Atoi(strings.TrimLeft(strings.ToLower(pkgName), "id"))
+	if err == nil {
+		return true
+	}
+	return false
+}
+
+func isAndroidPackageName(pkgName string) bool {
+	pkgName = strings.ToLower(pkgName)
+	return strings.HasPrefix(pkgName, "http") || strings.Contains(pkgName, "/") ||
+		!strings.Contains(pkgName, ".")
 }

@@ -3,8 +3,6 @@ package abtesting
 import (
 	"context"
 	"errors"
-	"github.com/hashicorp/consul/api"
-	jsoniter "github.com/json-iterator/go"
 	"hash/crc32"
 	"log"
 	"sort"
@@ -13,6 +11,9 @@ import (
 	"sync/atomic"
 	"time"
 	"unsafe"
+
+	"github.com/hashicorp/consul/api"
+	jsoniter "github.com/json-iterator/go"
 )
 
 type AbTesting struct {
@@ -27,8 +28,6 @@ type FlowInfo struct {
 	AdType      string
 	Country     string
 	PackageName string
-	AppId       int64
-	UnitId      int64
 	HashKey     string
 }
 
@@ -39,8 +38,6 @@ type Info struct {
 	Country     map[string]struct{} `json:"country"`
 	Device      map[string]struct{} `json:"device"`
 	PackageName map[string]struct{} `json:"package_name"`
-	AppId       map[int64]struct{}  `json:"app_id"`
-	UnitId      map[int64]struct{}  `json:"unit_id"`
 	Name        string              `json:"name"`
 	Content     []ContentInfo       `json:"content"`
 	IsHashKey   bool                `json:"is_hash_key"`
@@ -55,19 +52,6 @@ const HashNum = 10000
 const ExclusiveFlow = "exclusive_flow"
 
 var ExperimentsInfo *Experiments
-
-func NewAbTesting(addr, path string) (*AbTesting, error) {
-	config := api.DefaultConfig()
-	config.Address = addr
-	client, err := api.NewClient(config)
-	if err != nil {
-		return nil, err
-	}
-	return &AbTesting{
-		path:   path,
-		client: client,
-	}, nil
-}
 
 func (at *AbTesting) Init(ctx context.Context) error {
 	ExperimentsInfo = &Experiments{}
@@ -208,8 +192,6 @@ func (at *AbTesting) updateAb() error {
 			Country:     map[string]struct{}{},
 			Device:      map[string]struct{}{},
 			PackageName: map[string]struct{}{},
-			AppId:       map[int64]struct{}{},
-			UnitId:      map[int64]struct{}{},
 			Name:        "",
 			Content:     make([]ContentInfo, 0),
 		}
@@ -267,12 +249,6 @@ func flowControl(exclusive *Info, abInfo AbInfo) {
 	for _, v := range abInfo.FlowControl.PackageName {
 		exclusive.PackageName[v] = struct{}{}
 	}
-	for _, v := range abInfo.FlowControl.AppId {
-		exclusive.AppId[v] = struct{}{}
-	}
-	for _, v := range abInfo.FlowControl.UnitId {
-		exclusive.UnitId[v] = struct{}{}
-	}
 
 	exclusive.Name = abInfo.Experiment.Name
 	exclusive.IsHashKey = abInfo.HashType == "hash"
@@ -327,18 +303,6 @@ func checkFlow(flow *FlowInfo, info Info) bool {
 
 	if len(info.PackageName) > 0 {
 		if _, ok := info.PackageName[flow.PackageName]; !ok {
-			return false
-		}
-	}
-
-	if len(info.AppId) > 0 {
-		if _, ok := info.AppId[flow.AppId]; !ok {
-			return false
-		}
-	}
-
-	if len(info.UnitId) > 0 {
-		if _, ok := info.UnitId[flow.UnitId]; !ok {
 			return false
 		}
 	}

@@ -3,12 +3,13 @@ package abtesting
 import (
 	"context"
 	"fmt"
-	. "github.com/smartystreets/goconvey/convey"
 	"hash/crc32"
 	"strconv"
 	"testing"
 	"time"
 	"unsafe"
+
+	. "github.com/smartystreets/goconvey/convey"
 )
 
 const abtestInfo = `[{

@@ -11,29 +11,30 @@ import (
 
 func NewFilteringListPipeline() *FilteringListPipeline {
 	return &FilteringListPipeline{
-		funcBaseFilter: map[dsp_status.DspStatus]base_mediafilter.MediaHardFilter{
+		funcBaseFilter: map[dsp_status.DspStatus]base_mediafilter.MediaFilter{
 			dsp_status.DspStatusMediaHardFilterTraffic:     base_mediafilter.MediaHardFilterTraffic(),
 			dsp_status.DspStatusMediaHardFilterCountry:     base_mediafilter.MediaHardFilterCountry(),
 			dsp_status.DspStatusMediaHardFilterBidCache:    base_mediafilter.MediaHardFilterBidCache(bidCacheTableOption),
 			dsp_status.DspStatusMediaHardFilterBannerBType: base_mediafilter.MediaHardFilterBannerBType(),
 			dsp_status.DspStatusMediaHardFilterSize:        base_mediafilter.MediaHardFilterSize(),
+			dsp_status.DspStatusMediaSoftFilterPackageName: base_mediafilter.MediaSoftFilterPackageName(),
 		},
-		funcAppFilter: map[dsp_status.DspStatus]base_mediafilter.MediaHardFilter{
+		funcAppFilter: map[dsp_status.DspStatus]base_mediafilter.MediaFilter{
 			dsp_status.DspStatusMediaHardFilterUA:         base_mediafilter.MediaHardFilterUA(),
 			dsp_status.DspStatusMediaHardFilterDeviceType: base_mediafilter.MediaHardFilterDeviceType(deviceTypeWhiteTableOption),
 			dsp_status.DspStatusMediaHardFilterPlatform:   base_mediafilter.MediaHardFilterPlatform(),
 			dsp_status.DspStatusMediaHardFilterDeviceID:   base_mediafilter.MediaHardFilterDeviceID(deviceIDWhiteTableOption),
 		},
-		funcSiteFilter: map[dsp_status.DspStatus]base_mediafilter.MediaHardFilter{
+		funcSiteFilter: map[dsp_status.DspStatus]base_mediafilter.MediaFilter{
 
 		},
 	}
 }
 
 type FilteringListPipeline struct {
-	funcAppFilter  map[dsp_status.DspStatus]base_mediafilter.MediaHardFilter
-	funcSiteFilter map[dsp_status.DspStatus]base_mediafilter.MediaHardFilter
-	funcBaseFilter map[dsp_status.DspStatus]base_mediafilter.MediaHardFilter
+	funcAppFilter  map[dsp_status.DspStatus]base_mediafilter.MediaFilter
+	funcSiteFilter map[dsp_status.DspStatus]base_mediafilter.MediaFilter
+	funcBaseFilter map[dsp_status.DspStatus]base_mediafilter.MediaFilter
 }
 
 func (pipe *FilteringListPipeline) Description() string {
@@ -69,13 +70,13 @@ func isFromSite(ctx *dsp_context.DspContext) bool {
 	return ctx.Request.Site != nil
 }
 
-func runMediaHardFilter(ctx *dsp_context.DspContext, filterList map[dsp_status.DspStatus]base_mediafilter.MediaHardFilter) bool {
+func runMediaHardFilter(ctx *dsp_context.DspContext, list map[dsp_status.DspStatus]base_mediafilter.MediaFilter) bool {
 	if ctx.Feature == nil {
 		writeFilterReason(ctx, dsp_status.DspStatusDefault)
 		return true // 过滤流量
 	}
 
-	for reason, filter := range filterList {
+	for reason, filter := range list {
 		if filter == nil {
 			continue
 		}

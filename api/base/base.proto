@@ -11,8 +11,8 @@ message BaseRequest {
     string request_id = 1;
     string ip = 2; // 上游服务ip
     map<string, string> abtest = 3; // k:v
-    bool debug = 4;
-    bool openlog = 5;
+    bool debug = 4; // debug log
+    bool openlog = 5; // info log, warn log, error log
     int64 tmax = 6; // ms，超时控制 read context
 }
 
