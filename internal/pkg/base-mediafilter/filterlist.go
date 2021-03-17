@@ -210,14 +210,59 @@ func MediaSoftFilterPackageName(options ...WhiteTableOption) MediaFilter {
 
 func isIosPackageName(pkgName string) bool {
 	_, err := strconv.Atoi(strings.TrimLeft(strings.ToLower(pkgName), "id"))
-	if err == nil {
-		return true
-	}
-	return false
+	return err == nil
 }
 
 func isAndroidPackageName(pkgName string) bool {
 	pkgName = strings.ToLower(pkgName)
 	return strings.HasPrefix(pkgName, "http") || strings.Contains(pkgName, "/") ||
 		!strings.Contains(pkgName, ".")
+}
+
+func TrafficRelease(options ...WhiteTableOption) MediaFilter {
+	return func(feature *dbstruct.Feature) bool {
+		if reserved(feature, options...) {
+			return false
+		}
+		return false
+	}
+}
+
+func AntiCheat(options ...WhiteTableOption) MediaFilter {
+	return func(feature *dbstruct.Feature) bool {
+		if reserved(feature, options...) {
+			return false
+		}
+		switch {
+		case feature.Device == nil || isBlackIP(feature.Device.IP):
+			return true
+		case feature.App == nil || isBlackApp(feature.App.PackageName):
+			return true
+		default:
+			return false
+		}
+	}
+}
+
+func isBlackIP(ip string) bool {
+	// read db
+
+	// if ip in db, return true
+	return false
+}
+
+func isBlackApp(pkgName string) bool {
+	// read db
+
+	// if pkgName in db, return true
+	return false
+}
+
+func LowHistoryROI(options ...WhiteTableOption) MediaFilter {
+	return func(feature *dbstruct.Feature) bool {
+		if reserved(feature, options...) {
+			return false
+		}
+		return false
+	}
 }

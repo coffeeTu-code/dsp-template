@@ -1,0 +1,416 @@
+//drs structure
+syntax = "proto3";
+//namespace go rs
+package rs;
+//RankerRequest defines the dsp ranker request structure
+//暂时从11开始，1-9留着标准化用,1分配给serializable id
+message RankerRequest {
+    //serializable id
+    string requestId = 1 ;              //    1  required string requestId
+    DspInfo dspInfo = 2 ;               //    11  optional DspInfo dspInfo
+    CampaignList campaignList = 3 ;     //    12  optional CampaignList campaignList
+    JunoCommonInfo junoCommonInfo = 4;
+}
+
+message JunoCommonInfo {
+    string recallExperiment = 1;
+    string recallGroup = 2;
+}
+
+//RankerResponse defines the dsp ranker response structure
+//暂时从11开始，1-9留着标准化用,1返回服务状态
+message RankerResponse {
+    ServerStatus RankerStatus = 1 ;     //    1  required ServerStatus RankerStatus
+    //DspInfo.goreturn
+    bool goreturn = 2 ;                 //    11  required bool goreturn = false;
+    //DspInfo.desc
+    string desc = 3 ;                   //    12  required string desc
+    //DspInfo.ext1
+    string ext1 = 4 ;                   //    13  required string ext1
+    //DspInfo.ext2
+    string ext2 = 5 ;                   //    14  required string ext2
+    //DspInfo.ext8
+    string ext8 = 6 ;                   //    15  required string ext8
+    //DspInfo.ext3
+    map<string, string> ext3 = 16 ;     //    16  optional map<string, string> ext3
+    map<string, string> ext10 = 17 ;    //    17  optional map<string, string> ext10
+    //winCampaign []mvutil.Offer
+    repeated Offer winCampaigns = 18 ;  //    18  optional repeated Offer winCampaigns
+}
+
+//Status defines normal info about server
+message ServerStatus {
+    SErrorCode errorCode = 1 ;//    1  required SErrorCode errorCode
+    string message = 2 ;//    2  required string message
+    string ip = 3 ;//    3  required string ip
+    //Serializable id
+    string requestId = 4 ;//    4  required string requestId
+    int64 elapsed = 5 ;//    5  required int64 elapsed
+}
+
+enum SErrorCode {
+    kSuc = 0;
+    kFail = 1;
+}
+
+//campaignList structure
+message CampaignList {
+    repeated RankCampaignInfoStruct campaignInfo = 1 ;             //    1  optional map<int64, RankCompaignInfo> campaignInfo
+   repeated TempCampElemCreativeIds tempCampElemCreatives = 2 ;        //    2  optional map<string, map<int64, map<string, repeated OfferSRankCreativeIdx>>>> template
+    Offer winCampaign = 3 ;                                     //    3  optional Offer winCampaign
+    map<int64, TemplateRes> campWeight = 4 ;                    //    4  optional map<int64, TemplateRes> campWeight
+    map<string, string> templateTraffic = 5 ;                   //    5  optional map<string, string> templateTraffic
+    repeated MapCampaignElemCreativesV2 templateV2 = 6 ;
+ }
+
+message TempCampElemCreativeIds{
+    string TemplateId = 1;
+    repeated CampaignElemCreativeIds CampaignElemCreative = 2;
+}
+message CampaignElemCreativeIds{
+    int64 CampaignId = 1;
+    repeated ElementCreativeIds ElemCreatives = 2;
+}
+message ElementCreativeIds{
+    string ElementId = 1;
+    repeated SRankCreativeIds creatives = 2 ;
+}
+message SRankCreativeIds{
+    int32 FormatType = 1;                          // 1  creative's FormatType
+    repeated int64 CreativeId = 2;                 // 2  creative's id
+    string CreativeSpec = 3 ;                      // 3  creative spec
+}
+message SliceSRankCreativeIdx{
+    repeated SRankCreativeIdx Creatives = 1 ;   // slice SRankCreativeIdx
+}
+
+message MapCampaignElemCreativesV2 {
+    string TemplateId = 1;
+    repeated MapElementCreativesV2 CampaignElemCreative = 2;
+}
+message MapElementCreativesV2 {
+    int64 CampaignId = 1;
+    repeated SliceSRankCreativeIdxV2 ElementCreative = 2;
+}
+message SliceSRankCreativeIdxV2 {
+    string ElementId = 1;
+    repeated SRankCreativeIdxV2 Creatives = 2 ;
+}
+
+message RankCampaignInfoStruct {
+    int64 camppaignId = 1;
+    RankCompaignInfo campInfo = 2;
+}
+
+message RankCompaignInfo {
+    string PackageName = 1 ;            //index.pkgName
+    int32 CostType = 2 ;                //index.CostType
+    double Price = 3 ;                  //计算的：SetCountryChannelBidPirce(CampaignDetail.CountryChannelPrice,dspInfo.CountryCode,dspInfo.appId,CampaignDetail.Price)
+    int64 AuditIndustry = 4;            //单子adx维度送审行业
+    int32 RedirectStatus = 5;           //单子重定向Cap控制
+    JunoInfo JunoInfo = 6;
+    int64 StatusUpdated = 7;            //单子最近一次active的时间
+}
+
+message JunoInfo {
+    float tryNewPriceRate = 1;
+    repeated string recallTypes = 2;
+    float tryNewRate = 3;
+    int32 tryNewPriority = 4;
+    int32 prerankIndex = 5;
+    double prerankScore = 6;
+}
+
+message TemplateRes {
+    int64 TotalWeight = 1 ;                     //    1  required int64 TotalWeight
+    map<string, int64> TemplateMap = 2 ;        //    2  optional map<string, int64> TemplateMap
+    CampaignTemplateGroup ctg = 3 ;             //    3  optional CampaignTemplateGroup ctg
+}
+
+message CampaignTemplateGroup {
+    map<int64, TemplateGroup> Template = 1 ;        //	1  optional map<int64, TemplateGroup> Template
+}
+
+//TemplateGroup 模板组合结构体
+message TemplateGroup {
+    int64 Type = 1 ;                            //具体的模板组合枚举类型
+    int64 Weight = 2 ;                          //对应的模板组合权重，为0的话，算法自由组合。
+}
+
+//Offer defines the win campaign structure
+message Offer {
+    int64 CampaignId = 1 ;                       //        1  required int64 CampaignId
+    int32 Ctype = 2 ;                            //        2  required int32 Ctype
+    double Price = 3 ;                           //        3  required double Price
+    double CTR = 4 ;                             //        4  required double CTR
+    double CVR = 5 ;                             //        5  required double CVR
+    double IVR = 6 ;                             //    6  required double IVR
+    double IVR_DK = 7 ;                          //    7  required double IVR_DK
+    double CIVR = 8 ;                            //    8  required double CIVR
+    double DIVR = 9 ;                            //    9  required double DIVR
+    string TemplateId = 10 ;                     //	10  required string TemplateId
+    repeated string TemplateIdList = 11 ;        //	11  optional repeated string TemplateIdList
+	//from common structure
+    map<string,CreativeInfo> Template = 12 ;//	12  optional map<string,SliceSRankCreativeIdx> Template
+}
+message CreativeInfo{
+    int32 FormatType = 1;                          // 1  creative's FormatType
+    int64 CreativeId = 2;                          // 2  creative's id
+}
+message SRankCreativeIdxV2 {
+    int32 FormatType = 1 ;                          //    1  required int32 FormatType
+    repeated SImage Image = 2 ;                  //    2  optional map<int64, SImage> Image
+    repeated SImage DyImage = 3 ;                //    3  optional map<int64, SImage> DyImage
+    repeated SJsImage JsImage = 4 ;              //    4  optional map<int64, SJsImage> JsImage
+    repeated SJsImage MraidImage = 5 ;           //    5  optional map<int64, SJsImage> MraidImage
+    repeated SVideo Video = 6 ;                  //    6  optional map<int64, SVideo> Video
+    repeated SCommon Common = 7 ;                //    7  optional map<int64, SCommon> Common
+    repeated SGroupCreative GroupCreative = 8 ;  //    8  optional map<int64, SGroupCreative> GroupCreative
+}
+
+//SRankCreativeIdx composed by some creative, such as video and image
+message SRankCreativeIdx {
+    int32 FormatType = 1 ;                          //    1  required int32 FormatType
+    map<int64, SImage> Image = 2 ;                  //    2  optional map<int64, SImage> Image
+    map<int64, SImage> DyImage = 3 ;                //    3  optional map<int64, SImage> DyImage
+    map<int64, SJsImage> JsImage = 4 ;              //    4  optional map<int64, SJsImage> JsImage
+    map<int64, SJsImage> MraidImage = 5 ;           //    5  optional map<int64, SJsImage> MraidImage
+    map<int64, SVideo> Video = 6 ;                  //    6  optional map<int64, SVideo> Video
+    map<int64, SCommon> Common = 7 ;                //    7  optional map<int64, SCommon> Common
+    map<int64, SGroupCreative> GroupCreative = 8 ;  //    8  optional map<int64, SGroupCreative> GroupCreative
+}
+
+//SImage defines image structure
+message SImage {
+    int32 SubResourceType = 1 ;             //    1  required int32 SubResourceType
+    int32 ShowType = 2 ;                    //    2  required int32 ShowType
+    int64 CreativeType = 3 ;                //    3  required int64 CreativeType
+    string Resolution = 4 ;                 //    4  required string Resolution
+    repeated string Mime = 5 ;              //    5  optional repeated string Mime
+    SCommonField CommonField = 6 ;          //    6  optional SCommonField CommonField
+    int64 CreativeId = 7 ;
+}
+
+//SJsImage is not only image but also js and mraid image
+message SJsImage {
+    int32 SubResourceType = 1 ;             //    1  required int32 SubResourceType
+    int32 ShowType = 2 ;                    //    2  required int32 ShowType
+    int64 CreativeType = 3 ;                //    3  required int64 CreativeType
+    string Resolution = 4 ;                 //    4  required string Resolution
+    repeated string Mime = 5 ;              //    5  optional repeated string Mime
+    SCommonField CommonField = 6 ;          //    6  optional SCommonField CommonField
+    int64 CreativeId = 7 ;
+
+}
+
+//SVideo defines video structure
+message SVideo {
+    int32 VideoLength = 1 ;                 //    1  required int32 VideoLength
+    int32 Width = 2 ;                       //    2  required int32 Width
+    int32 Height = 3 ;                      //    3  required int32 Height
+    int32 Bitrate = 4 ;                     //    4  required int32 Bitrate
+    int32 SubResourceType = 5 ;             //    5  required int32 SubResourceType
+    int32 ShowType = 6 ;                    //    6  required int32 ShowType
+    int64 CreativeType = 7 ;                //    7  required int64 CreativeType
+    string VideoResolution = 8 ;            //    8  required string VideoResolution
+    repeated string Mime = 9 ;              //    9  optional repeated string Mime
+    SCommonField CommonField = 10 ;         //    10  optional SCommonField CommonField
+    int64 CreativeId = 11 ;
+}
+
+//SCommon defines such as title, description, icon and soon
+message SCommon {
+    int32 SubResourceType = 1 ;             //    1  required int32 SubResourceType
+    //int32 FormatType = 2 ;                //    2  required int32 FormatType
+    //int32 ResourceType = 3 ;              //    3  required int32 ResourceType
+    int32 ShowType = 4 ;                    //    4  required int32 ShowType
+    //int64 CreativeId = 5 ;                //    5  required int64 CreativeId
+    int64 CreativeType = 6 ;                //    6  required int64 CreativeType
+    string Value = 7 ;                      //    7  required string Value
+    //string TsCreativeId = 8 ;             //    8  required string TsCreativeId
+    //repeated int32 Attribute = 9 ;        //    9  optional repeated int32 Attribute
+    repeated string Mime = 10 ;             //    10  optional repeated string Mime
+    SCommonField CommonField = 11 ;         //    11  optional SCommonField CommonField
+    int64 CreativeId = 12 ;
+}
+
+//SGroupCreative defines audit creative structure
+message SGroupCreative {
+    int64 GroupId = 1 ;                         //    1  required int64 GroupId
+    map<int64, SImage> Image = 2 ;              //    2  optional map<int64, SImage> Image
+    map<int64, SImage> DyImage = 3 ;            //    3  optional map<int64, SImage> DyImage
+    map<int64, SJsImage> JsImage = 4 ;          //    4  optional map<int64, SJsImage> JsImage
+    map<int64, SJsImage> MraidImage = 5 ;       //    5  optional map<int64, SJsImage> MraidImage
+    map<int64, SVideo> Video = 6 ;              //    6  optional map<int64, SVideo> Video
+    map<int64, SCommon> Common = 7 ;            //    7  optional map<int64, SCommon> Common
+}
+
+//SCommonField defines common fields
+message SCommonField {
+    int64 Source = 1 ;                          //    1  required int64 Source
+    int64 TemplateType = 2 ;                    //    2  required int64 TemplateType
+    int64 Score = 3 ;                           //    3  required int64 Score
+    int64 Orientation = 4 ;                     //    4  required int64 Orientation
+    int64 Clarity = 5 ;                         //    5  required int64 Clarity
+    int64 VideoSize = 6 ;                       //    6  required int64 VideoSize
+    int64 Utime = 7 ;                           //    7  required int64 Utime
+    int64 Ctime = 8 ;                           //    8  required int64 Ctime
+    string FMd5 = 10 ;                          //    10  required string FMd5
+}
+
+//DspInfo structure
+message DspInfo {
+    //-=-=-=-=-=-=- request -=-=-=-=-=-=//
+    string DeviceIp = 1 ;                           //DeviceIp      string //[request]BidRequest.device.ip 设备IP
+    string Make = 2 ;                               //Make          string //[request]BidRequest.device.make 设备制造商，例如 "Apple"
+    string Model = 3 ;                              //Model         string //[request]BidRequest.device.model 设备型号，例如 "iphone"
+    string Os = 4 ;                                 //Os            string //[request]BidRequest.device.os 设备操作系统， 例如 “ios"
+    string Osv = 5 ;                                //Osv           string //[request]BidRequest.device.osv 设备操作系统版本号， 例如 “3.1.2”
+    int32 DeviceType = 6 ;                          //DeviceType    uint8  //[request]BidRequest.device.DeviceType 设备类型, 手机4，平板5等
+    int32 CnctType = 7 ;                            //CnctType      uint8  //[request]BidRequest.device.connectiontype 网络连接类型 例如 2-wifi 6-4g
+    string CountryCode = 8 ;                        //CountryCode   string //[request]BidRequest.Device.Geo.Country 国家码， 使用 ISO-3166-1-alpha-3
+    string Carrier = 9 ;                            //Carrier       string //[request]BidRequest.Device.carrier  Carrier or ISP (e.g., “VERIZON”) using exchange curated string names which should be published to bidders a priori
+    string city = 10 ;                              //city          string //[request]BidRequest.Device.geo.city 城市名，使用联合国贸易与运输位置码
+    string ext6 = 11 ;                              //ext6          string //[request]BidRequest.Device.ua 浏览器User-Agent字符串
+    //---req.app:field id [300 400)
+    repeated string category = 12 ;                 //category        []string //[request]BidRequest.App.cat 应用的IAB内容类型数组
+    string appkeywords = 13 ;                       //appkeywords     string   //[request]BidRequest.App.keywords 逗号分隔的应用的关键字信息
+    string publisherId = 14 ;                       //publisherId     string   //[request]BidRequest.App.Publisher.Id 交易特定的发布者标识
+    string posId = 15 ;                             //posId           string   //[request]BidRequest.App.id 交易特定的应用标识
+    string contentRating = 16 ;                     //contentRating   string   //[request]BidRequest.App.Content.Contentrating 内容分级（例如， MPAA美国电影分级制度)
+    string userRating = 17 ;                        //userRating      string   //[request]BidRequest.App.Content.userrating 内容的用户评分（比如，星数，点赞数等）
+    int64 qagMediaRating = 18 ;                     //qagMediaRating  int      //[request]BidRequest.App.Content.qagmediarating 媒体评分，按照QAG规范。
+    string contentKeywords = 19 ;                   //contentKeywords string   //[request]BidRequest.App.Content.KeyWords 逗号分隔的内容的关键字信息
+    string appId = 20 ;                             //appId   string //[request]BidRequest.App.bundle On Android, this should be a bundle or package name (e.g., com.foo.mygame). On iOS, it is typically a numeric ID.
+    string appName = 21 ;                           //appName string //[request]BidRequest.App.name 应用名称
+    int64 paid = 22 ;                               //paid    int    //[request]BidRequest.App.paid 应用是否需要付费， 0表示免费， 1表示付费
+
+    //---req.imp:field id [1000 1100)
+    int32 Intl = 23 ;                               //Intl              uint8     //[request]BidRequest.Imp[0].instl 1标识广告是插屏或者全屏广告， 0表示不是插屏广告
+    string Ext7 = 24 ;                              //Ext7              string    //[request]BidRequest.Imp[0].tagId 某个特定广告位或者广告标签的标识，用于发起竞拍。 为了方便调试问题或者进行买方优化
+    double BidFloor = 25 ;                          //BidFloor          float64   //[request]BidRequest.Imp[0].BidFloor 本次展示的最低竞拍价格， 以CPM表示
+    string DisplayManager = 26 ;                    //DisplayManager    string    //[request]BidRequest.Imp[0].DisplayManager广告媒体合作伙伴的名字， 用于渲染广告的SDK技术或者播放器（通常是视频或者移动广告）某些广告服务需要根据合作伙伴定制广告代码， 推荐在视频广告或应用广告中填充
+    string DisplayManagerVer = 27 ;                 //DisplayManagerVer string    //[request]BidRequest.Imp[0].DisplayManagerVer广告媒体合作伙伴， 用于渲染广告的SDK技术或者播放器（通常是视频或者移动广告）的版本号。 某些广告服务需要根据合作伙伴定制广告代码， 推荐在视频广告或应用广告中填充
+
+    //---req.user:field id [500 600),为方便查找，不改变dspinfo顺序。用户相关和设备信息类似，也是定向条件，故和请求一个级别
+    string keywords = 28 ;                          //keywords    string   //[request]BidRequest.User.KeyWords 逗号分隔的关键字， 兴趣或者意向列表
+    string gender = 29 ;                            //gender      string   //[request]BidRequest.User.gender 性别， M表示男性， F表示女性， O标识其他类型，不填充表示未知
+    int64 coppa = 30 ;                              //coppa int //[request]BidRequest.Regs.coppa 标志着该请求是否遵从COPPA(Children’s Online Privacy Protection Act)法案， 0表示不遵从， 1表示遵从
+    //-=-=-=-=-=- request end -=-=-=-=-=//
+
+    //-=-=-=-=-=- request rank -=-=-=-=-=
+    repeated BidRequestDataSegment userDataSegment = 31 ;   //userDataSegment     []*openrtb.BidRequest_Data_Segment //[request][rank] doubleclick bidRequest.GetUser().GetData()[0].GetSegment ext3.uds 只针对dci
+    string deviceLanguage = 32 ;                            //deviceLanguage      string                             //[request][rank]device.language 设备语言
+    double viewaBility = 33 ;                               //viewaBility         float64                            //[request][rank] 算法用，BidRequest.imp[0].Metric.value 个别adx才有该值
+    double clickThroughRate = 34 ;                          //clickThroughRate    float64                            //[request][rank] 同上，算法用，BidRequest.imp[0].Metric.value 个别adx才有该值
+    double videoCompletionRate = 35 ;                       //videoCompletionRate float64                            //[request][rank] 同上，算法用，BidRequest.imp[0].Metric.value 个别adx才有该值
+    //-=-=-=-=-=- request rank end -=-=-=-=-=
+
+    //-=-=-=-=-=- request inner -=-=-=-=-=//
+    string Googleadid = 36 ;                                //Googleadid                   string   //[request][inner]android系统时赋值 同ifa
+    int32 bannerPos = 37 ;                                  //bannerPos                    uint16   //[request][inner]等于上方pos,[request]BidRequest.Imp[0].Banner.pos 广告在屏幕上的位置
+    int32 videoPos = 38 ;                                   //videoPos                     uint16   //[request][inner]等于上方pos,[request]BidRequest.Imp[0].Video.pos 广告在屏幕上的位置
+    //repeated Size CompanionSizes = 39 ;                     //CompanionSizes               []Size   //[request][inner]视频的companion sizes，包括video 和 native video
+    bool OnlyVideo = 40 ;                                   //OnlyVideo                    bool     //[request][inner]视频流量仅仅投放视频
+    int32 OsNum = 41 ;                                      //OsNum                        uint8    //[request][inner]操作系统的数字枚举 Android 1, ios 2
+    int64 OsvNum = 42 ;                                     //OsvNum                       int      //[request][inner]转化Osv字符串为内部的版本数字，对应campaign的osvMax和osvMin
+    int64 userAge = 43 ;                                    //userAge                      int      //[request][inner]根据上面的yob，计算年龄
+    string DeviceId = 44 ;                                  //DeviceId                     string   //[request][inner]用于落请求日志和展示日志，一串数据逗号分割。info.Googleadid,info.Idfa,rtbReq.Ext.Udi.IdfaMd5,rtbReq.Ext.Udi.IdfaSha1,info.Imei,info.Imeimd5,info.Imeisha1,info.Androidid,info.Androididmd5,info.Androididsha1,rtbReq.Ext.Udi.MacMd5,rtbReq.Ext.Udi.MacSha1
+    string exchange = 45 ;                                  //exchange                     string   //[request][inner] adx名称，例如doubleclick，mopub等
+    //string url = 46 ;                                       //url                          string   //[request][inner] http请求request的requestURI
+    string xforwardIp = 47 ;                                //xforwardIp                   string   //[request][inner] http请求request的头Header["X-Forwarded-For"]记录的IP地址
+    int64 elapsed = 48 ;                                    //elapsed                      int64    //[request][inner] 记录耗时,毫秒
+    string reqType = 49 ;                                   //reqType                      string   //[request][inner] 流量分类类型，banner，video，native
+    string AdType = 50 ;                                    //AdType                       string   //[request][inner] b,i,n,vin,vre 等细分的流量分类 取值ext10["reqtype"]
+    bool IfSupportDeeplink = 51 ;                           //IfSupportDeeplink            bool     //[request][inner] 根据adx情况，指定初始化是否支持deeplink
+    string manualPosId = 52 ;                               //manualPosId                  string   //[request][inner] 主要算法用的多，广告位置 ext.Ext7_countryCode_app.bundle_exchange_os
+    repeated string dspSize = 53 ;                             //size                         []string //[request][inner] info.imgw x info.imgh eg 320x50,无空格。
+    string TrafficType = 54 ;                               //TrafficType                  string   //[request][inner] 网络流量类型 app 或 site
+    int64 debugCampaignId = 55 ;                            //debugCampaignId              int64    //[request][inner]请求url参数?campid 单子id, 用来调试对应的cpc/cpm广告
+    string DebugRule = 56 ;                                 //DebugRule                    string   //[request][inner]请求url参数?rule adx rule,用来调试对应的adx rule
+    //-=-=-=-=-=- request inner end -=-=-=-=-=//
+
+    //-=-=-=-=-=- response inner-=-=-=-=-=//
+    string TemplateId = 57 ;                                //TemplateId             string                                //[response][inner] 模板ID
+    bool Chklogflag = 58 ;                                  //Chklogflag                   bool                    //[inner] 根据日志输出比例，设置该属性值，true 打日志
+    bool goreturn = 59 ;                                    //goreturn                     bool                    //[inner] pipeline退出标识
+    map<string, string> ext10 = 60 ;                        //ext10                        map[string]string       //[inner] 给adn的扩展字段，例如ext10["reqtype"]
+    //-=-=-=-=-=- response inner end -=-=-=-=-=//
+
+    //-=-=-=-=-=- rank -=-=-=-=-=//
+    map<string,string> ext3 = 61 ;                          //ext3                map[string]string   //[rank][inner] dsp日志扩展字段
+    string ext8 = 62 ;                                      //ext8                string              //[rank][inner] ab测试标识位
+    bool justbid = 63 ;                                     //justbid             bool                //[rank] justbid
+    bool can_just_bid = 64 ;                                //can_just_bid        bool                //[rank] can_just_bid
+    bool can_justcons_bid = 65 ;                            //can_justcons_bid    bool                //[rank] can_justcons_bid
+    bool is_brand_camp = 66 ;                               //is_brand_camp       bool                //[rank] is_brand_camp
+    bool BudgetPactingFlag = 67 ;                           //BudgetPactingFlag   bool                //[rank] BudgetFilter，justBidSet, rankFilter 中用到
+    repeated TcPkgTimeInfo tc_pkg_time = 68 ;                   //tc_pkg_time                             //[rank] 充电箱数据，实时tc 包名及时间戳
+    //-=-=-=-=-=- rank end -=-=-=-=-=//
+     uint32 yob = 69 ;                                        //[request]BidRequest.User.yob 生日年份，使用4位数字表示
+    //-=-=-=-=-=- rand add 20190920 -=-=-=-=-=-=//
+    bool tc_ok = 70;
+    bool rankErrFlag = 71 ;
+    bool tc_ipua_flag = 72 ;
+    int32 AuctionType = 73 ;
+
+    map<int64,double> FloorPrice = 74;                        //[request]爱奇艺底价
+    //-=-=-=-=-=-=-=-= 腾讯相关信息传递给算法-=-=-=-=-=-=-=-=-
+    string Idfa = 75 ;
+    string IdfaMd5 = 76;
+    string Imei = 77 ;
+    string ImeiMd5 = 78 ;
+    string Gaid = 79 ;
+    string GaidMd5 = 80 ;
+    string AndroidId = 81 ;
+    string AndroidIdMd5 = 82 ;
+    //-=-=-=-=-=-=-=-=屏幕尺寸-=-=-=-=-=-=-=-=-
+    int32  ScreenWidth = 83;
+    int32  ScreenHeight = 84;
+    //-=-=-=-=-=-=-=-=广告位信息-=-=-=-=-=-=-=-=-
+    string PlacementId = 85;
+    string UnitId = 86;
+    //-=-=-=-=-=-=-=-new feature info-=-=-=-=-=-=-=-=-
+    DeviceInfo DeviceInfo = 87;
+    VideoFeature VideoFeature = 88;
+    string UserId = 89; //ext3.user.id
+}
+message TcPkgTimeInfo {
+    string PackageName = 1;
+    int64  TimeStamp = 2;
+}
+
+message DeviceInfo {
+    string IPV6 = 1;
+}
+
+message VideoFeature {
+    int32 PlaybackEnd = 1;
+    repeated int32 PlaybackMethod = 2;
+    int32 Skip = 3;
+}
+
+//OpenRTB 2.0: Segment objects are essentially key-value pairs
+message BidRequestDataSegment {
+    string id = 1 ;                     //    1  optional string id
+    string name = 2 ;                   //    2  optional string name
+    string value = 3 ;                  //    3  optional string value
+}
+
+message Size{
+    int32 Width = 1 ;                   //	1  required int32 Width
+    int32 Height = 2 ;                  //	2  required int32 Height
+}
+
+message SliceFloat{
+    repeated float Value = 1 ;                      //optional repeated double Value
+}
+
+message SliceInt64{
+    repeated int64  Value = 1 ;                     //optional SliceFloat Value
+}
+
+service RankerService {
+    rpc rank(RankerRequest) returns (RankerResponse);
+    //RankerResponse rank(1: RankerRequest req)
+}

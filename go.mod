@@ -16,5 +16,7 @@ require (
 	github.com/sirupsen/logrus v1.8.1
 	github.com/smartystreets/goconvey v1.6.4
 	go.uber.org/zap v1.16.0
+	golang.org/x/net v0.0.0-20190923162816-aa69164e4478
+	google.golang.org/grpc v1.36.0
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0 // indirect
 )

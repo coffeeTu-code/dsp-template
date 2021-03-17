@@ -1,0 +1,754 @@
+//template structure wiki：https://docs.qq.com/sheet/DZUNXaXR6WkVmR3JQ?tab=cn36g8&c=N68D0C0
+//author  xuefeng.han@mobvista.com
+//2020.04.03
+//*******************命名规范*****************************************//
+//message使用驼峰式命名, 首字母大写, 成员数据使用下划线分隔命名
+//枚举类型使用驼峰式命名, 首字母大写,每一项使用下划线大写分隔命名
+//*******************************************************************//
+syntax = "proto3";
+
+package polaris;
+
+//**************************** PolarisRequest 输入协议 ***************************
+message PolarisRequest {
+    // 1. 竞价请求的唯一ID。
+    // [AS ]: 1) 请求ID
+    // [DSP]: 1) RTB标准字段。bidRequest.id
+    string id = 1;
+
+    // 2. 竞价请求的adx名称。
+    // [AS ]: 1) 请求AdExchange Name，特指"mintegral"
+    // [DSP]: 1) 非RTB字段。请求AdExchange Name
+    string exchange = 2;
+
+    // 3. 广告展示类型，banner，native，video。
+    // [DSP]: 1) 非RTB字段。判断bidRequest.imp中banner，native，video是否不为空
+    string imp_type = 3;
+
+    // 4. 细分的广告展示类型。
+    // [AS ]: 1) 使用UnitID查询mongo数据得到，（参考enum_ad_type）
+    // [DSP]: 1) 非RTB字段。判断Imp中的一系列字段得到，（b，i，n，vna，vre，vis，vin...）
+    int32 ad_type = 4;
+
+    // 5. 可投放的素材组id，目前腾讯、头条、爱奇艺使用。
+    // [DSP]: 1) RTB非标字段。国内ADX投放审核素材组时使用, CreativeSpecSlice
+    repeated string ad_seat = 5;
+
+    // 6. 预检索的广告展示offer信息数组。
+    // [AS ]: 1) 检索单子优先队列
+    // [DSP]: 1) 非RTB字段。检索单子队列
+    repeated int64 campaign_id_list = 6;
+
+    // 7. 最大召回campaign数量，当检索到素材的单子数量达到max后，停止检索素材。默认检索完全部的单子队列
+    // [AS ]: 1)
+    // [DSP]: 1)
+    int32 campaign_max = 7;
+
+    // 8. Banner对象，如果展示需要以banner的形式提供则需要填充。
+    // [AS ]: 1) pioneer传递的信息
+    // [DSP]: 1) RTB标准字段。imp.banner object
+    RequestBanner banner = 8;
+
+    // 9. Native对象， 如果展示需要以Native广告的形式提供则需要填充。
+    // [DSP]: 1) RTB标准字段。imp.native object
+    RequestNative native = 9;
+
+    // 10. Video对象， 如果展示需要以视频的形式提供则需要填充。RTB标准字段。
+    // [DSP]: 1) RTB标准字段。imp.video object
+    RequestVideo video = 10;
+
+    // 11. Device对象， 表示展示将要被发送到的用户设备的信息。RTB标准字段。
+    // [AS ]: 1) 上游协议参数
+    // [DSP]: 1) RTB标准字段。device object
+    RequestDevice device = 11;
+
+    // 12. 用于在处理检索请求时避免超时的最大时间，以毫秒为单位。处理时间超出tmax则返回timeout-response
+    // [AS ]: 1) As定义超时时间
+    // [DSP]: 1) RTB标准字段。tmax
+    int32 tmax = 12;
+
+    // 13. 标识测试模式， false表示实况（非测试）模式，true表示测试模式
+    // [AS ]: 1) 上游协议参数，testmode
+    // [DSP]: 1) RTB标准字段。test
+    bool test = 13;
+
+    // 14. ext
+    // [DSP]: 1) 国内ADX的扩展字段
+    RequestExt ext = 14;
+
+    //15.if_support_dco
+    // [AS]: 1）该dco的请求切量开关，值为1表示需切量dco
+    // [DSP]: 1)
+    int32 if_support_dco = 15;
+
+    //16.流量特定的需要召回的素材属性
+    // [DSP]:
+    repeated string creative_features = 16;
+
+    //17.提供指定检索模版的定向
+    // [DSP]: debug
+    repeated int32 debug_template_list = 17;
+
+    //18.多图召回，图片数量
+    // [DSP]:
+    int32 MultiImageCount = 18;
+
+    //19. 部分模版定向
+    // [DSP]:
+    // [RTDSP]:
+    // [AS]:
+    // [Pivot]:
+    string business_type = 19;
+
+    //20. adx指定模版
+    // [DSP]
+    // [RTDSP]
+    string target_template = 20;
+
+    //21, abtest 代码侵入式标记，测试模版召回规则变动的影响
+    // [DSP]
+    // [RTDSP]
+    // [Pivot]
+    map<string, string> ab_test = 21;
+
+    //22,描述召回大模板的slot是否为固定slot数及变长slotNum的个数，slotNum为0，定长大模板，slotNum >0 变长大模板及大模板需要的slot数目。
+    // [DSP]
+    // [Pivot]
+    int32 adNum = 22;
+
+    //23请求类型： sdk,onlineApi,site等
+    //[AS]请求来源
+    int32 requestType = 23;
+
+    //24.if_support_webgl
+    // [AS]: 1）webgl的请求开关，为1时表明支持3d playable素材
+    // [DSP]: 1)
+    int32 if_support_webgl = 24;
+
+    //25.if_support_bigTemplate
+    //[AS] 1）用以表示请求是素材三期还是大模板请求，素材三期只能召回101大模板
+    bool bigTemplateSupport = 25;
+
+    //26.IfSupportRewardPlus
+    //[AS] 1)是否支持401大模板
+    bool if_support_rewardplus = 26;
+
+    //27.
+    //[DSP] 1)仅召回playable素材
+    bool only_playable_creative = 27;
+
+
+}
+
+
+message RequestRatio {
+    int32 w_ratio = 1;
+    int32 h_ratio = 2;
+    int32 w_min = 3;
+    int32 w_max = 4;
+    int32 h_min = 5;
+    int32 h_max = 6;
+}
+
+message DcoPart {
+    // 1.dco坑位id
+    // [AS ]: 1) rs.thrift - Part - 1 - partId
+    // [DSP]: 1)
+    int64 part_id = 1;
+
+    // 2.dco候选元素list
+    // [AS ]: 1) rs.thrift - Part - 1 - resIds
+    repeated int64 res_id_list = 2;
+}
+
+// 【1】sizes、format_sizes、banner_ratio
+// （规则1）按照请求的banner.w/h或banner.format.w/h匹配同尺寸的素材，或按照banner.format.wratio/hratio/wmin匹配同比例的素材
+// 【2】ratio
+// （规则1）召回ratio与该字段的字段值匹配的素材
+// 【3】mimes
+// （规则1）根据banner.mimes字段值召回同mimes的素材
+// 【4】battr
+// （规则1）根据banner.battr字段值过滤同attribute的素材
+message RequestBanner {
+    // 1. 展示广告的尺寸，以像素为单位。[w]x[h],如320x50，rtbReq.Imp[0].Video/banner/native.w、h
+    // [AS ]: 1) 上游协议参数，unit size
+    // [DSP]: 1) RTB标准字段组合。size = [w]x[h]
+    repeated string sizes = 1;
+
+    // 2. [w]x[h],如320x50，w=bidRequest.imp.banner.format.w, h=bidRequest.imp.banner.format.h
+    // [DSP]: 1) RTB标准字段组合。size = [w]x[h]
+    repeated string format_sizes = 2;
+
+    // 3. rtbReq.Imp[0].banner.format.wratio/hratio/wmin
+    // [DSP]: 1) RTB标准字段
+    repeated RequestRatio banner_ratio = 3;
+
+    // 4. 非RTB字段。计算[w]/[h]
+    // [AS ]: 1) [w]/[h], size = [w]x[h]
+    // [DSP]: 1) 非RTB字段。[w]/[h]
+    repeated float ratio = 4;
+
+    // 5. 支持的内容mime-type. 常用的mime-type包括application/x-shockwave-flash, image/jpg以及 image/gif.
+    // [AS ]: 1) 上游协议参数
+    // [DSP]: 1) RTB标准字段
+    repeated string mimes = 5;
+
+    // 6. 限制的物料属性，
+    // [AS ]: 1) 上游协议参数
+    // [DSP]: 1) RTB标准字段
+    repeated int32 b_attr = 6;
+
+    // 7. 限制的banner类型
+    // [AS ]: 1) 上游协议参数
+    // [DSP]: 1) RTB标准字段
+    repeated int32 b_type = 7;
+
+    // 8. 本次展示支持的API框架列表，如果一个API没有被显式在列表中指明，则表示不支持
+    // [AS ]: 1) 上游协议参数
+    // [DSP]: 1) RTB标准字段
+    repeated int32 api = 8;
+
+    // 9. 请求广告位 横竖屏
+    // [AS ]: 1) 上游协议参数
+    // [DSP]: 1) mintegral RTB扩展字段
+    int32 orientation = 9;
+}
+
+// bidRequest.imp.native.request反序列化后的结构，较特殊，参考Native Ad规范
+// 【1】image_size
+// （规则1）图片按照请求的native object的 img.w/h严格匹配
+// 【2】video_size、video_orientation
+// （规则1）视频按照请求的native object的video.w/h严格匹配，或者按照orientation匹配同横竖屏视频
+// 【3】image_mimes
+// （规则1）图片根据imageMimes字段值召回同mimes的素材
+// 【4】video_mimes
+// （规则1）视频根据videoMimes字段值召回同mimes的素材
+message RequestNative {
+    // 1. bidRequest.imp.native.request反序列化后得到w,h。[w]x[h]
+    // [AS ]: 1) 上游协议参数
+    // [DSP]: 1) RTB标准字段
+    repeated string image_size = 1;
+
+    // 2. 支持的内容mime-type. 常用的mime-type包括application/x-shockwave-flash, image/jpg以及 image/gif.
+    // [AS ]: 1) 上游协议参数
+    // [DSP]: 1) RTB标准字段
+    repeated string image_mimes = 2;
+
+    // 3. bidRequest.imp.native.request反序列化后得到w,h。[w]x[h]
+    // [AS ]: 1) 上游协议参数
+    // [DSP]: 1) RTB标准字段
+    repeated string video_size = 3;
+
+    // 4. 视频的方向要求。值为1是竖屏，值为2是横屏
+    // [AS ]: 1) 上游协议参数
+    // [DSP]: 1) RTB标准字段
+    int32 video_orientation = 4;
+
+    // 5. 支持的内容mime-type. 常用的mime-type包括application/x-shockwave-flash, image/jpg以及 image/gif.
+    // [AS ]: 1) 上游协议参数
+    // [DSP]: 1) RTB标准字段
+    repeated string video_mimes = 5;
+
+    // 6. 本次展示支持的API框架列表，如果一个API没有被显式在列表中指明，则表示不支持
+    // [AS ]: 1) 上游协议参数
+    // [DSP]: 1) RTB标准字段
+    repeated int32 api = 6;
+
+    // 7. 限制的物料属性，
+    // [AS ]: 1) 上游协议参数
+    // [DSP]: 1) RTB标准字段
+    repeated int32 b_attr = 7;
+
+    // 8. 展示广告的尺寸，以像素为单位。
+    // [AS ]: 1) 上游协议参数
+    // [DSP]: 1) RTB标准字段
+    repeated string icon_sizes = 8;
+
+    // 9. 展示广告的文本要求
+    // [AS ]: 1) 上游协议参数
+    // [DSP]: 1) RTB标准字段
+    repeated string text_data = 9;
+}
+
+message NativeRequestData {
+    // 1. 该element是展示必要的元素
+    // [AS ]: 1) 上游协议参数
+    // [DSP]: 1) RTB标准字段
+    int32 required = 1;
+
+    // 2. 展示text的类型
+    // [AS ]: 1) 上游协议参数
+    // [DSP]: 1) RTB标准字段，参考native 7.3
+    int32 type = 2;
+
+    // 3. 展示text的最大长度，为0默认不限制长度
+    // [AS ]: 1) 上游协议参数
+    // [DSP]: 1) RTB标准字段
+    int32 len = 3;
+}
+
+// 【1】size、orientation
+// （规则1）根据video.w/h或video.ext.orientation召回视频
+// （规则2）默认召回16:9视频
+// 【2】max_bitrate、min_bitrate
+// （规则1）根据video.maxbidrate和video.minbitrate召回符合范围的视频
+// 【3】max_duration、min_duration、max_extended
+// （规则1）根据video.maxduration和video.minduration召回符合范围的视频
+// 【4】companion_ad、companiontype
+// （规则1）按照请求的video.companionad.w/h或video.companionad.format.w/h匹配同尺寸图片，或按照video.companionad.format.wratio/hratio/wmin匹配同比例图片
+message RequestVideo {
+    // 1. [w]x[h],如320x50，w=bidRequest.imp.video.w, h=bidRequest.imp.video.h
+    // [DSP]: 1) RTB标准字段
+    repeated string size = 1;
+
+    // 2. 视频的方向要求。值为1是竖屏，值为2是横屏
+    // [DSP]: 1) RTB标准字段
+    int32 orientation = 2;
+
+    // 3. 最大的比特率，以Kbps为单位。
+    // [DSP]: 1) RTB标准字段
+    int32 max_bitrate = 3;
+
+    // 4. 最小的比特率，以Kbps为单位。
+    // [DSP]: 1) RTB标准字段
+    int32 min_bitrate = 4;
+
+    // 5. 视频清晰度要求。1为高清，2为低清
+    // [DSP]: 1) RTB标准字段
+    int32 clarity = 5;
+
+    // 6. 最大的视频长度， 以秒为单位
+    // [DSP]: 1) RTB标准字段
+    int32 max_duration = 6;
+
+    // 7. 最小的视频长度， 以秒为单位
+    // [DSP]: 1) RTB标准字段
+    int32 min_duration = 7;
+
+    // 8. 最大的视频广告延长时间长度（如果支持延长）。如果为空或者0，表示不允许延长， 如果为-1，表示允许延时，且没有时间限制， 如果为大于0的数字， 则表示可以延长的时间长度比maxduration大的值
+    // [DSP]: 1) RTB标准字段
+    int32 max_extended = 8;
+
+    // 9. 支持的内容mime-type， 常用的类型包括用于windows媒体的video/x-ms-wmv以及用于Flash视频的video/x-flv.
+    // [DSP]: 1) RTB标准字段
+    repeated string mimes = 9;
+
+    // 10. 限制的物料属性
+    // [DSP]: 1) RTB标准字段
+    repeated int32 b_attr = 10;
+
+    // 11. 本次展示支持的API框架列表，如果一个API没有被显式在列表中指明，则表示不支持
+    // [DSP]: 1) RTB标准字段
+    repeated int32 api = 11;
+
+    // 12. 如果支持复合广告，表示一组Banner对象
+    // [DSP]: 1) RTB标准字段
+    repeated RequestBanner companion_ad = 12;
+
+    // 13. 支持的VAST companion 广告类型，如果在companionad中填充了Banner对象则推荐使用
+    // [DSP]: 1) RTB标准字段
+    repeated int32 companiontype = 13;
+}
+
+message RequestDevice {
+    // 1. 设备操作系统， 例如 “ios"
+    // [AS ]: 1) 上游协议参数
+    // [DSP]: 1) RTB标准字段。bidRequest.device.os
+    int32 os = 1;
+
+    // 2. 设备操作系统版本号， 例如 “3.1.2”
+    // [AS ]: 1) 上游协议参数
+    // [DSP]: 1) bidRequest.device.osv
+    string osv = 2;
+
+    // 3. 网络连接类型
+    // [AS ]: 1) 上游协议参数
+    // [DSP]: 1) RTB标准字段。bidRequest.device.connectiontype
+    int32 network_type_as = 3;
+
+    // 4. 用户当前地理位置, 设备位置
+    // [AS ]: 1) 上游协议参数
+    // [DSP]: 1) RTB标准字段。bidRequest.device.geo.country
+    string country = 4;
+
+    // 5. 低版本设备标志
+    // [AS ]: 1) 上游协议参数
+    bool low_device = 5;
+
+    // 6.
+    // [AS ]: 1) 上游协议参数
+    int32 api_version = 6;
+
+    // 7.
+    // [AS ]: 1) 上游协议参数
+    string sdk_version = 7;
+
+    // 8. RTB标准字段。bidRequest.app.id
+    // [AS ]: 1) 上游协议参数
+    // [DSP]: 1) RTB标准字段
+    int64 app_id = 8;
+
+    // 9. RTB标准字段。bidRequest.app.bundle
+    // [AS ]: 1) 上游协议参数
+    // [DSP]: 1) RTB标准字段
+    string app_bundle = 9;
+
+    // 10.
+    // [AS ]: 1) 上游协议参数
+    int64 unit_id = 10;
+
+    // 11. 展示广告的媒体的发布者交易特定的发布者标识
+    // [AS ]: 1) 上游协议参数
+    // [DSP]: 1) RTB标准字段。bidRequest.app.publisher.id
+    int64 publisher_id = 11;
+
+    // 12. MinSWPercent,companion屏幕尺寸的最小宽度比例
+    // [DSP]: 1) 非RTB字段
+    int32 min_screen_width_percent = 12;
+
+    // 13. MaxSWPercent,companion屏幕尺寸的最大宽度比例
+    // [DSP]: 1) 非RTB字段
+    int32 max_screen_width_percent = 13;
+
+    // 14. MaxSHPercent,companion屏幕尺寸的最大高度比例
+    // [DSP]: 1) 非RTB字段
+    int32 max_screen_height_percent = 14;
+
+    // 15. MinSHPercent,companion屏幕尺寸的最小高度比例
+    // [DSP]: 1) 非RTB字段
+    int32 min_screen_height_percent = 15;
+}
+
+message RequestExt {
+    // 1. DonotSupportDynamicDyImage是否不支持动态图片
+    // [DSP]: 1) 非RTB字段
+    bool forbid_dynamic_image = 1;
+
+    // 2. NeedAdvAudit,是否需要广告主审核
+    // [DSP]: 1) 非RTB字段
+    bool need_adv_audit = 2;
+
+    // 3. NeedCreativeAudit,是否需要素材审核
+    // [DSP]: 1) 非RTB字段
+    bool need_creative_audit = 3;
+
+    // 4. 是否需要行业审核
+    // [DSP]: 1) 非RTB字段, BlockAuditIndustyIds
+    repeated string b_industy_id_audit = 4;
+
+    // 5.
+    // [DSP]: 1) RTB非标字段, BlockAuditAttribute
+    string b_attr_audit = 5;
+
+    // 6. BlackKeyWords关键字黑名单，目前腾讯使用
+    // [DSP]: 1) RTB非标字段, BlackKeyWords
+    repeated string black_keywords = 6;
+}
+
+//***************************** PolarisResponse ********************************
+message PolarisResponse {
+    // 1. 资源请求处理结果状态
+    // [AS ]: 1)
+    // [DSP]: 1)
+    int32 status = 1;
+
+    // 2. 资源请求处理耗时, 单位：ms
+    // [AS ]: 1)
+    // [DSP]: 1)
+    int32 time = 2;
+
+    // 3. 召回的可用大模板以及slot信息
+    // [AS ]: 1) rs.thrift - SRankerInput - 201
+    repeated BigTemplate big_template_list = 3;
+
+    // 4. slot详细信息
+    // [AS ]: 1) rs.thrift - SRankerInput - 202
+    // [DSP]: 1) 单子信息
+    repeated SlotObj slot_list = 4;
+}
+
+// 在Polaris协议中，<BigTemplate>包含显示广告素材所需的全部信息。Polaris响应可能会提供多个大模版。
+message BigTemplate {
+    // 1. 大模板ID
+    // [AS ]: 1) rs.thrift - SBigTemplate - 1
+    int32 big_template_id = 1;
+
+    // 2. 大模板包含的slot数组
+    // [AS ]: 1) rs.thrift - SBigTemplate - 2
+    repeated SlotReference slot_list = 2;
+}
+
+// 在Polaris协议中，<Slot>包含显示广告素材所需的Pod信息和属性信息。Polaris响应大模版中可能会提供多个Slot。
+message SlotReference {
+    // 1. Slot显示位置定义。从0开始
+    // [AS ]: 1) rs.thrift - SlotObjReference - 1
+    int32 slot_index = 1;
+
+    // 2. Slot类型定义
+    // [AS ]: 1) rs.thrift - SlotObjReference - 2
+    int32 slot_id = 2;
+
+    // 3. 该类slot是否是该大模板中所必要的
+    // [AS ]: 1) rs.thrift - SlotObjReference - 3
+    bool required = 3;
+}
+
+// 在Polaris协议中，<Slot>包含显示广告素材所需的Pod信息和属性信息（单子--模版/素材组）。
+message SlotObj {
+    // 1. 技术侧定义为全局唯一的ID，只用于as和rs交互，外部系统及产品定义中无slotId概念
+    // [AS ]: 1) rs.thrift - SlotObj - 1
+    int32 slot_id = 1;
+
+    // 2. 召回单子下的模版/素材
+    // [AS ]: 1) rs.thrift - SlotObj - 2
+    // [DSP]: 1)
+    repeated CampaignTemplate campaign_template_list = 2;
+}
+
+//CampaignTemplate...包含一个offer召回的完整的模板信息
+message CampaignTemplate {
+    // 1. offer id
+    // [AS ]: 1) rs.thrift - SCampaignDataFromFrame - 1
+    // [DSP]: 1)
+    int64 campaign_id = 1;
+
+    // 2. 把模板组合在templateId的维度上打平,
+    // [AS ]: 1) rs.thrift - SCampaignDataFromFrame - 200
+    repeated TemplateTypeGroupInstance template_group_list = 2;
+
+    // 3. 模板数据，包含模板属性以及召回的素材
+    // [AS ]: 1) rs.thrift - SCampaignDataFromFrame - 201
+    // [DSP]: 1)
+    repeated TemplateObj template_list = 3;
+
+    // 4. 素材数据表
+    // [AS ]: 1) rs.thrift - SCampaignDataFromFrame - 203
+    // [DSP]: 1)
+    repeated CreativeAttr creative_list = 4;
+}
+
+message TemplateTypeGroupInstance {
+    // 1. 模版组合（为了屏蔽传输链路结点感知业务细节变化，所以枚举类型转成int来透明传输）
+    // [AS ]: 1) rs.thrift - TemplateTypeGroupInstance - 1
+    int32 template_group = 1;
+
+    // 2. 模板组合召回的子模版ID
+    // [AS ]: 1) rs.thrift - TemplateTypeGroupInstance - 2
+    repeated int32 template_id_tuple = 2;
+}
+
+//模版中包含预送审素材和非预送审素材，因二者素材组织层级关系不同，分成两组字段使用
+//预送审逻辑：国内adx召回的素材是送审是组织好的素材组，每个creativeSpec可以召回多个素材组，经算法优选后，仅保留最优的一个。每个素材组中的素材保持完整，算法输入和输出时素材组内容不变。
+//素材索引字段：creative_spec、group_creative_list
+//非预送审逻辑：国外adx召回的是polaris内部定义的模版，每个模版包含多个元素，元素描述了素材的类型和size，任意符合素材类型和size要求的素材都可以作为元素构成模版，算法优选时，仅选出一个模版，模版的每个元素都要有一个素材。
+//素材索引字段：element_list
+message TemplateObj {
+    // 1.
+    // [AS ]: 1) rs.thrift - STemplateObj - 1 - templateId
+    // [DSP]: 1)
+    int32 template_id = 1;
+
+    // 2.
+    // [AS ]: 1) rs.thrift - STemplateObj - 2 - templateType
+    int32 template_type = 2;
+
+    // 3.
+    // [AS ]: 1) rs.thrift - STemplateObj - 3 - componentType
+    int32 component_type = 3;
+
+    // 4. 新老协议Mapping逻辑： 参数templateId + 参数apiFramework -> 旧协议templateId
+    // [AS ]: 1) rs.thrift - STemplateObj - 4 - apiFramework
+    // [DSP]: 1) Response - CrType
+    int32 api_framework = 4;
+
+    // 5. 对应component的展示顺序，数字越小越先展示
+    // [AS ]: 1) rs.thrift - STemplateObj - 5 - order
+    int32 order = 5;
+
+    // 6. 横竖屏
+    // [AS ]: 1) rs.thrift - STemplateObj - 6 - orientation
+    int32 orientation = 6;
+
+    // 7. 视频模版的屏幕尺寸（全屏、半屏）
+    // [AS ]: 1) rs.thrift - STemplateObj - 7 - videoTemplateScreenSize
+    int32 template_screen_size = 7;
+
+    // 8. 可点击区域
+    // [AS ]: 1) rs.thrift - STemplateObj - 8 - clickArea
+    repeated int32 click_area = 8;
+
+    // 9. 模板元素候选的素材
+    // [AS ]: 1) rs.thrift - STemplateObj - 9 - elementList
+    // [DSP]: 1)
+    repeated TemplateElement element_list = 9;
+
+    // 10. 国内adx请求广告位
+    // [DSP]: 1)
+    string creative_spec = 10;
+
+    // 11. 国内adx广告位召回的素材组
+    // [DSP]: 1)
+    repeated GroupCreative group_creative_list = 11;
+}
+
+message TemplateElement {
+    // 1.
+    // [AS ]: 1) rs.thrift - STemplateElement - 1 - elementType
+    // [DSP]: 1)
+    string element_name = 1;
+
+    // 2. 素材候选集合
+    // [AS ]: 1) rs.thrift - STemplateElement - 2 - creativeList
+    // [DSP]: 1)
+    repeated ElementCreative creative_id_list = 2;
+}
+
+message GroupCreative {
+    // 1.素材组ID
+    // [DSP]: 1)
+    string group_id = 1;
+
+    // 2. 素材候选集合
+    // [DSP]: 1)
+    repeated ElementCreative creative_id_list = 2;
+}
+
+message ElementCreative {
+    // 1.
+    // [AS ]: 1) rs.thrift - CreativeDesc - 1 - creativeType
+    // [DSP]: 1)
+    int64 creative_type = 1;
+
+    // 2.
+    // [AS ]: 1) rs.thrift - CreativeDesc - 2 - creativeId
+    int64 creative_id = 2;
+
+    // 3.
+    // [AS ]: 1) rs.thrift - CreativeDesc - 3 - docId
+    // [DSP]
+    string doc_id = 3;
+
+    // 4.
+    // [DSP ]:
+    int64 adn_creative_id = 4;
+
+    // [DSP]
+    int32 format_type = 5;
+}
+
+message CreativeAttr {
+    // 1. creative_id
+    // [AS ]: 1)
+    // [DSP]: 1)
+    int64 creative_id = 1;
+
+    // 2. sub_creative_id，最内层的creativeId
+    // [AS ]: 1) 素材ID, creativeId字段
+    // [DSP]: 1) 素材ID, creativeId字段
+    int64 sub_creative_id = 2;
+
+    // 3.
+    // [AS ]: 1) rs.thrift - CreativeAttr - 9
+    // [DSP]: 1)
+    string resolution = 3;
+
+    // 4.
+    // [AS ]: 1) rs.thrift - CreativeAttr - 11
+    // [DSP]: 1)
+    string video_resolution = 4;
+
+    // 5.
+    // [AS ]: 1) rs.thrift - CreativeAttr - 10
+    // [DSP]: 1)
+    string video_length = 5;
+
+    // 6.
+    // [AS ]: 1) rs.thrift - CreativeAttr - 5
+    // [DSP]: 1)
+    int32 width = 6;
+
+    // 7.
+    // [AS ]: 1) rs.thrift - CreativeAttr - 4
+    // [DSP]: 1)
+    int32 height = 7;
+
+    // 8.
+    // [AS ]: 1) rs.thrift - CreativeAttr - 1
+    // [DSP]: 1)
+    int32 bitrate = 8;
+
+    // 9.
+    // [AS ]: 1) rs.thrift - CreativeAttr - 12
+    // [DSP]: 1)
+    string video_size = 9;
+
+    // 10.
+    // [AS ]: 1) rs.thrift - CreativeAttr - 7
+    // [DSP]: 1)
+    int32 orientation = 10;
+
+    // 11.
+    // [AS ]: 1) rs.thrift - CreativeAttr - 6
+    int64 minOs = 11;
+
+    // 12.
+    // [AS ]: 1) rs.thrift - CreativeAttr - 21
+    int32 platform = 12;
+
+    // 13.
+    // [AS ]: 1) rs.thrift - CreativeAttr - 13
+    // [DSP]: 1)
+    string fmd5 = 13;
+
+    // 14. 素材来源，1是creativeInfo表上的campaign+CC或者packageName+CC维度素材，如果非1为其他来源，比如来自campaignInfo对象上的素材
+    // [AS ]: 1)
+    // [DSP]: 1)
+    int32 source = 14;
+
+    // 15.
+    // [AS ]: 1) rs.thrift - CreativeAttr - 15
+    // [DSP]: 1)
+    int64 ctime = 15;
+
+    // 16.
+    // [AS ]: 1) rs.thrift - CreativeAttr - 16
+    // [DSP]: 1)
+    int64 utime = 16;
+
+    // 17.对应creative_package.cpId，表示该素材所属的素材包id， 如dco包，abtest包
+    // [AS ]: 1) rs.thrift - CreativeAttr - 25
+    // [DSP]: 1)
+    int64 cp_id = 17;
+
+    // 18.对应 creative_package.settings.parts
+    // [AS ]: 1) rs.thrift - CreativeAttr - 26
+    // [DSP]: 1)
+    repeated DcoPart dco_part_list = 18;
+
+    // 19.对应creative_package.packageType，区分素材是作为哪种素材包被召回的，0:普通素材，1:DCO包素材 2:abtest组素材
+    int32 creative_package_type = 19;
+
+    // 20. 对应creative_package.advCreativeGid，表示广告主素材组id
+    int64 adv_creative_group_id = 20;
+
+    // 21.abtest素材套id
+    int64 abtest_tuple_id = 21;
+
+    // 22.rs做效果特征素材标记
+    // [AS ]: 1) rs.thrift - CreativeAttr - 30
+    int64 uniq_cid = 22;
+
+    // 23.广告主素材Id
+    // [AS ]: 1) rs.thrift - CreativeAttr - 20
+    string adv_creative_id = 23;
+
+    // 24.素材仓库提供dco原始id
+    // [AS ]: 1) rs.thrift - CreativeAttr - 28
+    int64 whdcoId = 24;
+}
+
+service PolarisService {
+    rpc GetPolarisResponse (PolarisRequest) returns (PolarisResponse) {
+    }
+}
+

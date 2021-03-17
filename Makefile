@@ -4,15 +4,11 @@ GIT_TAG=$(shell git describe --tags)
 GIT_AUTHOR=$(shell git show -s --format=%an)
 SHELL:=/bin/bash
 
-all: codeline codegen
+all: codegen codeline
 
 # ----------- codeline
 .PHONY: codeline
-codeline: code-api code-cmd code-examples code-internal code-pkg
-	@echo -e "total      \t : 功能代码 $(shell find . -name '*.go' | grep -v 'test.go' | xargs cat | wc -l) | 测试代码 $(shell find . -name '*.go' | grep 'test.go' | xargs cat | wc -l)"
-
-.PHONY: code-api
-code-api:
+codeline:
 	@echo -e "./api      \t : 功能代码 $(shell find ./api -name '*.go' | grep -v 'test.go' | xargs cat | wc -l) | 测试代码 $(shell find ./api -name '*.go' | grep 'test.go' | xargs cat | wc -l)"
 	@echo -e " -adx      \t : 功能代码 $(shell find ./api/adx -name '*.go' | grep -v 'test.go' | xargs cat | wc -l) | 测试代码 $(shell find ./api/adx -name '*.go' | grep 'test.go' | xargs cat | wc -l)"
 	@echo -e " -base     \t : 功能代码 $(shell find ./api/base -name '*.go' | grep -v 'test.go' | xargs cat | wc -l) | 测试代码 $(shell find ./api/base -name '*.go' | grep 'test.go' | xargs cat | wc -l)"
@@ -23,30 +19,23 @@ code-api:
 	@echo -e " -rank     \t : 功能代码 $(shell find ./api/rank -name '*.go' | grep -v 'test.go' | xargs cat | wc -l) | 测试代码 $(shell find ./api/rank -name '*.go' | grep 'test.go' | xargs cat | wc -l)"
 	@echo -e " -render   \t : 功能代码 $(shell find ./api/render -name '*.go' | grep -v 'test.go' | xargs cat | wc -l) | 测试代码 $(shell find ./api/render -name '*.go' | grep 'test.go' | xargs cat | wc -l)"
 
-.PHONY: code-cmd
-code-cmd:
 	@echo -e "./cmd      \t : 功能代码 $(shell find ./cmd -name '*.go' | grep -v 'test.go' | xargs cat | wc -l) | 测试代码 $(shell find ./cmd -name '*.go' | grep 'test.go' | xargs cat | wc -l)"
 
-.PHONY: code-examples
-code-examples:
 	@echo -e "./examples \t : 功能代码 $(shell find ./examples -name '*.go' | grep -v 'test.go' | xargs cat | wc -l) | 测试代码 $(shell find ./examples -name '*.go' | grep 'test.go' | xargs cat | wc -l)"
 
-.PHONY: code-internal
-code-internal:
 	@echo -e "./internal \t : 功能代码 $(shell find ./internal -name '*.go' | grep -v 'test.go' | xargs cat | wc -l) | 测试代码 $(shell find ./internal -name '*.go' | grep 'test.go' | xargs cat | wc -l)"
 
-.PHONY: code-pkg
-code-pkg:
 	@echo -e "./pkg      \t : 功能代码 $(shell find ./pkg -name '*.go' | grep -v 'test.go' | xargs cat | wc -l) | 测试代码 $(shell find ./pkg -name '*.go' | grep 'test.go' | xargs cat | wc -l)"
+
+	@echo -e "total      \t : 功能代码 $(shell find . -name '*.go' | grep -v 'test.go' | xargs cat | wc -l) | 测试代码 $(shell find . -name '*.go' | grep 'test.go' | xargs cat | wc -l)"
 
 # ----------- codeline end
 
 # ----------- codegen
 .PHONY: codegen
-codegen: codegen-base
-
-.PHONY: codegen-base
-codegen-base:
+codegen:
 	@echo -e "codegen    \t : $(shell cd ./api/base && pwd && sh codegen.sh && cd ../../)"
+	@echo -e "codegen    \t : $(shell cd ./api/base && pwd && sh codegen.sh && cd ../../)"
+	@echo -e "codegen    \t : $(shell cd ./api/rank && pwd && sh codegen.sh && cd ../../)"
 
 # ----------- codegen end

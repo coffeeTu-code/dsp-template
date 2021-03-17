@@ -41,7 +41,7 @@ func (x StatusBase) String() string {
 	return proto.EnumName(StatusBase_name, int32(x))
 }
 func (StatusBase) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_base_71f55850df224923, []int{0}
+	return fileDescriptor_base_e9225b3a244190e7, []int{0}
 }
 
 // 被调用 rpc 服务 推荐集成 context
@@ -61,7 +61,7 @@ func (m *BaseRequest) Reset()         { *m = BaseRequest{} }
 func (m *BaseRequest) String() string { return proto.CompactTextString(m) }
 func (*BaseRequest) ProtoMessage()    {}
 func (*BaseRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_base_71f55850df224923, []int{0}
+	return fileDescriptor_base_e9225b3a244190e7, []int{0}
 }
 func (m *BaseRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_BaseRequest.Unmarshal(m, b)
@@ -140,7 +140,7 @@ func (m *BaseResponse) Reset()         { *m = BaseResponse{} }
 func (m *BaseResponse) String() string { return proto.CompactTextString(m) }
 func (*BaseResponse) ProtoMessage()    {}
 func (*BaseResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_base_71f55850df224923, []int{1}
+	return fileDescriptor_base_e9225b3a244190e7, []int{1}
 }
 func (m *BaseResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_BaseResponse.Unmarshal(m, b)
@@ -216,7 +216,7 @@ func (m *BaseMetrics) Reset()         { *m = BaseMetrics{} }
 func (m *BaseMetrics) String() string { return proto.CompactTextString(m) }
 func (*BaseMetrics) ProtoMessage()    {}
 func (*BaseMetrics) Descriptor() ([]byte, []int) {
-	return fileDescriptor_base_71f55850df224923, []int{2}
+	return fileDescriptor_base_e9225b3a244190e7, []int{2}
 }
 func (m *BaseMetrics) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_BaseMetrics.Unmarshal(m, b)
@@ -274,9 +274,9 @@ func init() {
 	proto.RegisterEnum("base.StatusBase", StatusBase_name, StatusBase_value)
 }
 
-func init() { proto.RegisterFile("base.proto", fileDescriptor_base_71f55850df224923) }
+func init() { proto.RegisterFile("base.proto", fileDescriptor_base_e9225b3a244190e7) }
 
-var fileDescriptor_base_71f55850df224923 = []byte{
+var fileDescriptor_base_e9225b3a244190e7 = []byte{
 	// 437 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x53, 0x4b, 0x8b, 0xd4, 0x40,
 	0x10, 0x36, 0x8f, 0xcd, 0x4e, 0x6a, 0x74, 0x09, 0x8d, 0x48, 0x33, 0xb8, 0x18, 0xf7, 0x14, 0x04,
