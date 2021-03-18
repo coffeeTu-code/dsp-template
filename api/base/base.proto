@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package base;
 
-// 被调用 rpc 服务 推荐集成 context
+// -----被调用 rpc 服务 推荐集成 context
 message BaseRequest {
     string request_id = 1;
     string ip = 2; // 上游服务ip
@@ -27,11 +27,32 @@ enum StatusBase {
     Success = 1;
     Fail = 2;
 }
-// 被调用 rpc 服务 推荐集成 context End
+// -----被调用 rpc 服务 推荐集成 context End
 
+// ----- metrics
 message BaseMetrics {
     string region = 1;
     string ip = 2;
     string namespace = 3;
     string subsystem = 4;
 }
+// ----- metrics End
+
+// ----- feature
+message FDeviceIds {
+    string googleadid = 1;
+    string idfa = 2;
+    string googleadidmd5 = 3;
+    string googleadidsh1 = 4;
+    string imei = 5;
+    string imeimd5 = 6;
+    string imeisha1 = 7;
+    string androidid = 8;
+    string androididmd5 = 9;
+    string androididsha1 = 10;
+    string oaid = 11;
+    string oaidmd5 = 12;
+}
+
+// ----- feature End
+

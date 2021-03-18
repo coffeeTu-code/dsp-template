@@ -1,9 +1,11 @@
 package dbstruct
 
+import "dsp-template/api/base"
+
 func NewFeature() *Feature {
 	return &Feature{
 		Imp:       &FImp{},
-		DeviceIds: &FDeviceIds{},
+		DeviceIds: &base.FDeviceIds{},
 		Device:    &FDevice{},
 		User:      &FUser{},
 		App:       &FApp{},
@@ -21,7 +23,7 @@ type Feature struct {
 	Size        []string
 	BidFloor    float64
 	Imp         *FImp
-	DeviceIds   *FDeviceIds
+	DeviceIds   *base.FDeviceIds
 	Device      *FDevice
 	User        *FUser
 	App         *FApp
@@ -37,21 +39,6 @@ type FImp struct {
 	SessionDepth int    `json:"sessiondepth,omitempty"` // Ext
 	SourceID     int    `json:"source_id,omitempty"`    // Ext
 	SourceURL    string `json:"source_url,omitempty"`   // Ext
-}
-
-type FDeviceIds struct {
-	GoogleAdId     string //1
-	Idfa           string //2
-	GoogleAdIdMD5  string //3
-	GoogleAdIdSHA1 string //4
-	Imei           string //5
-	ImeiMD5        string //6
-	ImeiSHA1       string //7
-	AndroidId      string //8
-	AndroidIdMD5   string //9
-	AndroidIdSHA1  string //10
-	OAId           string //11
-	OAIdMD5        string //12
 }
 
 type FDevice struct {

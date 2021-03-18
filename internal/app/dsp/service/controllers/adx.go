@@ -11,8 +11,8 @@ import (
 	dsp_metrics "dsp-template/internal/app/dsp/dsp-metrics"
 	dsp_status "dsp-template/internal/app/dsp/dsp-status"
 	"dsp-template/internal/app/dsp/pipeline"
-	"dsp-template/internal/app/dsp/service/current"
 	base_feature "dsp-template/internal/pkg/base-feature"
+	"dsp-template/internal/pkg/helper-microservice"
 )
 
 func NewAdxController() *AdxController {
@@ -23,14 +23,15 @@ type AdxController struct {
 	beego.Controller
 }
 
+var currentLimiter = microservice_helper.NewCurrentLimiter(100)
+
 func (c *AdxController) BidServer() {
 	// current limit
-	cl := current.NewCurrentLimiter()
-	if !cl.Get() {
+	if !currentLimiter.Get() {
 		circuit()
 		return
 	}
-	defer cl.Put()
+	defer currentLimiter.Put()
 
 	// run
 	c.run()

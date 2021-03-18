@@ -1,10 +1,10 @@
-package current
+package microservice_helper
 
 import "sync/atomic"
 
-func NewCurrentLimiter() *CurrentLimit {
+func NewCurrentLimiter(max int64) *CurrentLimit {
 	return &CurrentLimit{
-		max: max(),
+		max: max,
 	}
 }
 
@@ -27,8 +27,4 @@ func (cl *CurrentLimit) Put() {
 		return
 	}
 	atomic.AddInt64(&cl.current, -1)
-}
-
-func max() int64 {
-	return 100
 }

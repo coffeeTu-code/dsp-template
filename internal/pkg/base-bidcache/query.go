@@ -269,7 +269,7 @@ func (this *QueryInfo) GetCacheKey() string {
 
 func BuildRawQuery(feature *dbstruct.Feature, adxCfg *ExchangeConfig) *RawQueryParser {
 	return &RawQueryParser{
-		Googleadid:     feature.DeviceIds.GoogleAdId,
+		Googleadid:     feature.DeviceIds.Googleadid,
 		Exchange:       feature.Exchange,
 		Appid:          feature.App.PackageName,
 		Adtype:         feature.AdType,

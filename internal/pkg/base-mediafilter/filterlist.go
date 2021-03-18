@@ -87,20 +87,20 @@ func MediaHardFilterUA(options ...WhiteTableOption) MediaFilter {
 	}
 }
 
-func hasDeviceId(deviceIds *dbstruct.FDeviceIds) bool {
+func hasDeviceId(deviceIds *base.FDeviceIds) bool {
 	return deviceIds != nil &&
-		(len(deviceIds.GoogleAdId) > 0 ||
+		(len(deviceIds.Googleadid) > 0 ||
 			len(deviceIds.Idfa) > 0 ||
-			len(deviceIds.GoogleAdIdMD5) > 0 ||
-			len(deviceIds.GoogleAdIdSHA1) > 0 ||
+			len(deviceIds.Googleadidmd5) > 0 ||
+			len(deviceIds.Googleadidsh1) > 0 ||
 			len(deviceIds.Imei) > 0 ||
-			len(deviceIds.ImeiMD5) > 0 ||
-			len(deviceIds.ImeiSHA1) > 0 ||
-			len(deviceIds.AndroidId) > 0 ||
-			len(deviceIds.AndroidIdMD5) > 0 ||
-			len(deviceIds.AndroidIdSHA1) > 0 ||
-			len(deviceIds.OAId) > 0 ||
-			len(deviceIds.OAIdMD5) > 0)
+			len(deviceIds.Imeimd5) > 0 ||
+			len(deviceIds.Imeisha1) > 0 ||
+			len(deviceIds.Androidid) > 0 ||
+			len(deviceIds.Androididmd5) > 0 ||
+			len(deviceIds.Androididsha1) > 0 ||
+			len(deviceIds.Oaid) > 0 ||
+			len(deviceIds.Oaidmd5) > 0)
 }
 
 func MediaHardFilterDeviceType(options ...WhiteTableOption) MediaFilter {
@@ -161,9 +161,9 @@ var (
 	googleIdExp  = regexp.MustCompile("[0-9a-fA-F]{8}(-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}")
 )
 
-func isPseudoDeviceID(deviceIds *dbstruct.FDeviceIds) bool {
-	if len(deviceIds.GoogleAdId) > 0 {
-		return googleIdExp.MatchString(deviceIds.GoogleAdId)
+func isPseudoDeviceID(deviceIds *base.FDeviceIds) bool {
+	if len(deviceIds.Googleadid) > 0 {
+		return googleIdExp.MatchString(deviceIds.Googleadid)
 	}
 	return false
 }
