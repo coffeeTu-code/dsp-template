@@ -1,93 +1,95 @@
 //juno structure
 syntax = "proto3";
 
-import "common/common.proto";
+import "base/base.proto";
 
 package juno;
+
+option go_package = "dsp-template/api/juno/juno";
+
 //JunoRequest defines the dsp juno request structure
 //暂时从11开始，1-9留着标准化用,1分配给serializable id
 message JunoRequest {
-    //serializable id
-    string requestId = 1 ;              //    1  requestId dsp请求id
-    string clientLable = 2 ;            //    2  clientLable 服务标记（dsp/as)
-    string Exchange = 10 ;              //    10 adx名称，例如doubleclick，mopub等
-    string Os = 11 ;                     //    11 操作系统的数字枚举 Android 1, ios 2
-    string Country = 12 ;               //    12 国家码
-    string PkgName = 13 ;               //    13 a bundle or package name
-    string AdType = 14 ;                //    14 b,i,n,vin,vre 等细分的流量分类
-    string GoogleAdId = 15 ;            //    15 android系统时赋值 同ifa
-    string GoogleAdIdMd5 = 16 ;         //    16 服务自行生成gaidmd5值，打印日志
-    bool IsGoogleAdId = 17 ;            //    17 有效的gaid
-    string AppId = 18 ;                 //    18 On Android, this should be a bundle or package name (e.g., com.foo.mygame). On iOS, it is typically a numeric ID.
-    bool ReserverFlag = 19 ;          //    19 过滤流量保留标记
-    int32 OsNum = 20 ;                  //    20 操作系统的数字枚举 Android 1, ios 2
-    string DeviceLanguage = 21 ;        //    21 设备语言
-    bool Https = 22 ;                   //    22 展示请求是否需要使用HTTPS加密物料信息
-    repeated string Bcat = 23 ;                  //    23 Bcat被封锁的广告主类别，使用IAB 内容类别
-    repeated string AdvertiserWhiteList = 24 ;// 24 广告主白名单
-    repeated string AdvertiserBlackList = 25 ;// 25 广告主黑名单
-    repeated int64 BlockIndustryIds = 26 ;//  26 禁止投放的广告行业id
-    repeated int64 BlockClickType = 27 ; //  27 广告位不支持的点击跳转类型
-    bool DevImpLimit = 28 ;              //   28 仅品牌单
-    repeated string Badv = 29 ;          //   29 域名封锁列表
-    int32 NetWorkType = 30 ;            //   30 网络连接类型 例如 2-wifi 6-4g
-    int32 RequestGender = 31 ;           //   31 性别
-    int32 UserAge = 32 ;                 //   32 年龄
-    int32 Coppa = 33 ;                   //   33 标志着该请求是否遵从COPPA(Children’s Online Privacy Protection Act)法案， 0表示不遵从， 1表示遵从
-    repeated int64 WhiteOfferList = 34 ; //   34 开发者设置的白名单offer id
-    repeated int64 BlackOfferList = 35 ; //   35 开发者或者SDK设置的黑名单offer id
-    bool ForbidApk = 36 ;                //   36 默认不禁止apk类型单子。是否允许投放apk单子，apk的值从campaign.campaignType获得
-    repeated int32 BSubCategorySDK = 37 ;//   37 开发者设置的禁止投放的市场分类
-    repeated string IabCategory = 38 ;   //   38 应用的IAB内容类型数组
-    bool IfSupportDeepLink = 39 ;        //   39 是否支持deeplink
-    string CityCode = 40 ;               //   40 城市名，使用联合国贸易与运输位置码
-    string Carrier = 41 ;                //   41 Carrier or ISP (e.g., “VERIZON”) using exchange curated string names which should be published to bidders a priori
-    string Make = 42 ;                   //   42 设备制造商，例如 "Apple"
-    int32 DeviceType = 43 ;              //   43 设备类型, 手机4，平板5等
-    string Model = 44 ;                  //   44 设备型号，例如 "iphone"
-    string Hwv = 45 ;                    //   45 Hardware version of the device (e.g., “5S” for iPhone 5S)
-    string Bundle = 46 ;                 //   46 From AppId
-    string Imei = 47 ;                   //   47 部分adx请求Android系统会带imei明文
-    string ImeiMd5 = 48 ;                //   48 硬件设备ID(例如 IMEI),使用md5哈希算法
-    string AndroidId = 49 ;              //   49 设备平台id, 部分adx传入，Android id
-    string AndroidIdMd5 = 50 ;           //   50 设备平台ID(例如 Android ID),使用md5哈希算法
-    bool IsImei = 51 ;                   //   51 有效的imei
-    bool IsAndroidId = 52 ;              //   52 有效的Android
-    string TrafficType = 53 ;            //   53 网络流量类型 app 或 site
-    string AppSite = 54 ;                //   54 Site流量定向，from AppId
-    string MvAppId = 55 ;                //   55 网络流量类型 app 或 site
-    repeated string BApp = 56 ;          //   56 app包名黑名单
-    repeated string BAppCategory = 57 ;  //   57 应用市场一级分类, unity ext扩展字段 //unity
-    repeated string BAppSubCategory = 58 ;//  58 应用市场二级分类, unity ext扩展字段 //unity
-    repeated string BSubCategoryName = 59;//  59 禁止投放的广告行业
-    bool NeedAdvAudit = 60 ;             //   60 是否需要广告主审核
-    bool NeedCreativeAudit = 61 ;        //   61 是否需要素材审核
-    bool OpenLog = 62 ;                  //   62 是否抽样打印日志
-    bool NeedSearchCpc = 63 ;            //   63 是否是品牌单
-    bool QueryDmpDone = 64 ;             //   64 是否需要获取DMP数据
-    string TagId = 65;                   //   65 某个特定广告位或者广告标签的标识，用于发起竞拍。 为了方便调试问题或者进行买方优化
-    repeated int64 DebugCampaignIdList = 66 ;// 66 QA Debug 单子id列表
-    repeated int64 BlockAuditIndustryId = 67 ; // 67 禁止投放的送审行业分类
-    string ManualPosId = 68 ;            //   68 流量(我们组装的countryCode_PackageName_exchange_os广告位)细粒度标识
-    int32 Osv = 69 ;                    //   69 设备操作系统版本号， 例如 “3.1.2”
-    repeated string Tc_pkg_time = 79 ;   //   79 tci请求 - Offer过滤原因跟踪，加载关注对象【算法给的包名Map：UserDmpInfo.Tc_pkg_time】
-    string ext8 = 80;                    //   80 ext8 算法标签
-    double algo_pre_rank_rate = 81 ;     //   81 算法preRank rate
-    int64 UnitId = 82 ;                 //   82 unitId
-    int64 MAppId = 83 ;                 //   83 as召回逻辑使用的appId
-    int64 PublisherId = 84 ;            //   84 publisherId
-    int64 Category    = 85 ;            //   85 as优先队列召回需要使用categroy
-    int64 Time        = 86 ;            //   86 指定时间投放
-    map<string, string> abKey = 87;     //   ab test key
+    base.BaseRequest baserequest = 1;
+    string clientLable = 2; //    2  clientLable 服务标记（dsp/as)
+    string Exchange = 10; //    10 adx名称，例如doubleclick，mopub等
+    string Os = 11; //    11 操作系统的数字枚举 Android 1, ios 2
+    string Country = 12; //    12 国家码
+    string PkgName = 13; //    13 a bundle or package name
+    string AdType = 14; //    14 b,i,n,vin,vre 等细分的流量分类
+    string GoogleAdId = 15; //    15 android系统时赋值 同ifa
+    string GoogleAdIdMd5 = 16; //    16 服务自行生成gaidmd5值，打印日志
+    bool IsGoogleAdId = 17; //    17 有效的gaid
+    string AppId = 18; //    18 On Android, this should be a bundle or package name (e.g., com.foo.mygame). On iOS, it is typically a numeric ID.
+    bool ReserverFlag = 19; //    19 过滤流量保留标记
+    int32 OsNum = 20; //    20 操作系统的数字枚举 Android 1, ios 2
+    string DeviceLanguage = 21; //    21 设备语言
+    bool Https = 22; //    22 展示请求是否需要使用HTTPS加密物料信息
+    repeated string Bcat = 23; //    23 Bcat被封锁的广告主类别，使用IAB 内容类别
+    repeated string AdvertiserWhiteList = 24; // 24 广告主白名单
+    repeated string AdvertiserBlackList = 25; // 25 广告主黑名单
+    repeated int64 BlockIndustryIds = 26; //  26 禁止投放的广告行业id
+    repeated int64 BlockClickType = 27; //  27 广告位不支持的点击跳转类型
+    bool DevImpLimit = 28; //   28 仅品牌单
+    repeated string Badv = 29; //   29 域名封锁列表
+    int32 NetWorkType = 30; //   30 网络连接类型 例如 2-wifi 6-4g
+    int32 RequestGender = 31; //   31 性别
+    int32 UserAge = 32; //   32 年龄
+    int32 Coppa = 33; //   33 标志着该请求是否遵从COPPA(Children’s Online Privacy Protection Act)法案， 0表示不遵从， 1表示遵从
+    repeated int64 WhiteOfferList = 34; //   34 开发者设置的白名单offer id
+    repeated int64 BlackOfferList = 35; //   35 开发者或者SDK设置的黑名单offer id
+    bool ForbidApk = 36; //   36 默认不禁止apk类型单子。是否允许投放apk单子，apk的值从campaign.campaignType获得
+    repeated int32 BSubCategorySDK = 37; //   37 开发者设置的禁止投放的市场分类
+    repeated string IabCategory = 38; //   38 应用的IAB内容类型数组
+    bool IfSupportDeepLink = 39; //   39 是否支持deeplink
+    string CityCode = 40; //   40 城市名，使用联合国贸易与运输位置码
+    string Carrier = 41; //   41 Carrier or ISP (e.g., “VERIZON”) using exchange curated string names which should be published to bidders a priori
+    string Make = 42; //   42 设备制造商，例如 "Apple"
+    int32 DeviceType = 43; //   43 设备类型, 手机4，平板5等
+    string Model = 44; //   44 设备型号，例如 "iphone"
+    string Hwv = 45; //   45 Hardware version of the device (e.g., “5S” for iPhone 5S)
+    string Bundle = 46; //   46 From AppId
+    string Imei = 47; //   47 部分adx请求Android系统会带imei明文
+    string ImeiMd5 = 48; //   48 硬件设备ID(例如 IMEI),使用md5哈希算法
+    string AndroidId = 49; //   49 设备平台id, 部分adx传入，Android id
+    string AndroidIdMd5 = 50; //   50 设备平台ID(例如 Android ID),使用md5哈希算法
+    bool IsImei = 51; //   51 有效的imei
+    bool IsAndroidId = 52; //   52 有效的Android
+    string TrafficType = 53; //   53 网络流量类型 app 或 site
+    string AppSite = 54; //   54 Site流量定向，from AppId
+    string MvAppId = 55; //   55 网络流量类型 app 或 site
+    repeated string BApp = 56; //   56 app包名黑名单
+    repeated string BAppCategory = 57; //   57 应用市场一级分类, unity ext扩展字段 //unity
+    repeated string BAppSubCategory = 58; //  58 应用市场二级分类, unity ext扩展字段 //unity
+    repeated string BSubCategoryName = 59; //  59 禁止投放的广告行业
+    bool NeedAdvAudit = 60; //   60 是否需要广告主审核
+    bool NeedCreativeAudit = 61; //   61 是否需要素材审核
+    bool OpenLog = 62; //   62 是否抽样打印日志
+    bool NeedSearchCpc = 63; //   63 是否是品牌单
+    bool QueryDmpDone = 64; //   64 是否需要获取DMP数据
+    string TagId = 65; //   65 某个特定广告位或者广告标签的标识，用于发起竞拍。 为了方便调试问题或者进行买方优化
+    repeated int64 DebugCampaignIdList = 66; // 66 QA Debug 单子id列表
+    repeated int64 BlockAuditIndustryId = 67; // 67 禁止投放的送审行业分类
+    string ManualPosId = 68; //   68 流量(我们组装的countryCode_PackageName_exchange_os广告位)细粒度标识
+    int32 Osv = 69; //   69 设备操作系统版本号， 例如 “3.1.2”
+    repeated string Tc_pkg_time = 79; //   79 tci请求 - Offer过滤原因跟踪，加载关注对象【算法给的包名Map：UserDmpInfo.Tc_pkg_time】
+    string ext8 = 80; //   80 ext8 算法标签
+    double algo_pre_rank_rate = 81; //   81 算法preRank rate
+    int64 UnitId = 82; //   82 unitId
+    int64 MAppId = 83; //   83 as召回逻辑使用的appId
+    int64 PublisherId = 84; //   84 publisherId
+    int64 Category = 85; //   85 as优先队列召回需要使用categroy
+    int64 Time = 86; //   86 指定时间投放
+    map<string, string> abKey = 87; //   ab test key
     repeated string TcPackageName = 88; //   TC流量包名
-    repeated int64 RtCampaignIds  = 89; //   rt单子id列表
+    repeated int64 RtCampaignIds = 89; //   rt单子id列表
     double PriceFloor = 90; // 底价
     int64 RequestType = 91; // 请求类型
-    Device device = 92;  // 设备相关信息
+    Device device = 92; // 设备相关信息
     repeated string PackageNameBlackList = 93; // pkg黑名单
     repeated int64 AdSource = 94; //
-    bool DebugJuno = 95 ;              //95 是否打juno debug日志
-    bool NeedApkLandingPage = 96 ;              //96 是否需要apk落地页
+    bool DebugJuno = 95; //95 是否打juno debug日志
+    bool NeedApkLandingPage = 96; //96 是否需要apk落地页
 }
 
 
@@ -100,54 +102,54 @@ message Device {
     string Idfa = 6;
     string IdfaMd5 = 7;
     repeated int64 AudienceIds = 8; // 特殊人群包
-    repeated string RuleIds = 9;  //人群流量定向包
+    repeated string RuleIds = 9; //人群流量定向包
     string OaidMd5 = 10;
-    string GoogleAdId = 11 ;            //    11 android系统时赋值 同ifa
-    string GoogleAdIdMd5 = 12 ;         //    12 服务自行生成gaidmd5值，打印日志
-    string Imei = 13 ;                   //   13 部分adx请求Android系统会带imei明文
-    string ImeiMd5 = 14 ;                //   14 硬件设备ID(例如 IMEI),使用md5哈希算法
-    string AndroidId = 15 ;              //   15 设备平台id, 部分adx传入，Android id
-    string AndroidIdMd5 = 16 ;           //   16 设备平台ID(例如 Android ID),使用md5哈希算法
+    string GoogleAdId = 11; //    11 android系统时赋值 同ifa
+    string GoogleAdIdMd5 = 12; //    12 服务自行生成gaidmd5值，打印日志
+    string Imei = 13; //   13 部分adx请求Android系统会带imei明文
+    string ImeiMd5 = 14; //   14 硬件设备ID(例如 IMEI),使用md5哈希算法
+    string AndroidId = 15; //   15 设备平台id, 部分adx传入，Android id
+    string AndroidIdMd5 = 16; //   16 设备平台ID(例如 Android ID),使用md5哈希算法
 
 }
 
 //RankerResponse defines the dsp ranker response structure
 //暂时从11开始，1-9留着标准化用,1返回服务状态
 message JunoResponse {
-    ServerStatus JunoStatus = 1 ;          //    1 服务状态信息
-    repeated int64 deprecatedSearchResultList  = 2 ; //废弃
-    repeated JunoSearchResult SearchResultListWithTag = 3 ; //优先队列对象列表
-    string 	Ext8 = 4 ;            //算法标签
-    bool deprecatedIsPreference = 5 ;       //废弃
-    string deprecatedITciFilterInfo = 6;     //废弃
-    string deprecatedStrategy = 7;  //废弃
+    ServerStatus JunoStatus = 1; //    1 服务状态信息
+    repeated int64 deprecatedSearchResultList = 2; //废弃
+    repeated JunoSearchResult SearchResultListWithTag = 3; //优先队列对象列表
+    string Ext8 = 4; //算法标签
+    bool deprecatedIsPreference = 5; //废弃
+    string deprecatedITciFilterInfo = 6; //废弃
+    string deprecatedStrategy = 7; //废弃
     repeated string deprecatedFilteredTcPackages = 8; //废弃
     repeated int64 deprecatedFilteredTcCampaignIds = 9; //废弃
-    repeated int64 installApps = 10;          //dmp人群包信息
-    common.JunoCommonInfo commonInfo = 11;
-    map<string, string> usedAbKeys = 12;     //使用过的abKey
+    repeated int64 installApps = 10; //dmp人群包信息
+    //common.JunoCommonInfo commonInfo = 11;
+    map<string, string> usedAbKeys = 12; //使用过的abKey
 }
 
 //Status defines normal info about server
 message ServerStatus {
-    SErrorCode errorCode = 1 ;//    1  errorCode 成功或失败
-    string message = 2 ;      //    2  message 成功或失败信息
-    string ip = 3 ;           //    3  ip
-    int64 elapsed = 4 ;       //    4  elapsed juno检索耗时
+    SErrorCode errorCode = 1; //    1  errorCode 成功或失败
+    string message = 2; //    2  message 成功或失败信息
+    string ip = 3; //    3  ip
+    int64 elapsed = 4; //    4  elapsed juno检索耗时
 }
 
 //juno返回的单子对象
 message JunoSearchResult {
-    int64 CampaignId = 1 ;  //单子id
-    string deprecatedStrategy = 2 ;   //废弃
+    int64 CampaignId = 1; //单子id
+    string deprecatedStrategy = 2; //废弃
     double givingPrice = 3;
-    int64 deprecatedWeight = 4;  //废弃
-    int64 deprecatedRecallType = 5;  //废弃
+    int64 deprecatedWeight = 4; //废弃
+    int64 deprecatedRecallType = 5; //废弃
     int32 deprecatedSequency = 6; //废弃
     float tryNewRate = 7; // 人工试新比例 as使用
     float tryNewPriceRate = 8; // 人工试新提价系数
     repeated string recallTypes = 9; // 表示单子从哪个队列召回, TryNew,AutoTryNew,PreRank,UnitCC,AdTypeCC,Default,TcRecall,RtRecall,CategoryTryNew,CategoryAutoTryNew
-    common.JunoCampaignCommonInfo commonInfo = 10; // 用于透传
+    //common.JunoCampaignCommonInfo commonInfo = 10; // 用于透传
 }
 
 enum SErrorCode {
@@ -156,7 +158,7 @@ enum SErrorCode {
 }
 
 service JunoService {
-    rpc junoSearch(JunoRequest) returns (JunoResponse);
-    rpc junoSearchTC(JunoRequest) returns (JunoResponse);
-    rpc junoSearchRtDsp(JunoRequest) returns (JunoResponse);
+    rpc junoSearch (JunoRequest) returns (JunoResponse);
+    rpc junoSearchTC (JunoRequest) returns (JunoResponse);
+    rpc junoSearchRtDsp (JunoRequest) returns (JunoResponse);
 }

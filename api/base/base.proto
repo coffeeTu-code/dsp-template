@@ -1,10 +1,6 @@
-// greeter.proto 问候语协议
-
 syntax = "proto3";
 
 package base;
-
-option go_package = "dsp-template/api/base/base;base";
 
 // 被调用 rpc 服务 推荐集成 context
 message BaseRequest {

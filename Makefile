@@ -34,8 +34,6 @@ codeline:
 # ----------- codegen
 .PHONY: codegen
 codegen:
-	@echo -e "codegen    \t : $(shell cd ./api/base && pwd && sh codegen.sh && cd ../../)"
-	@echo -e "codegen    \t : $(shell cd ./api/base && pwd && sh codegen.sh && cd ../../)"
-	@echo -e "codegen    \t : $(shell cd ./api/rank && pwd && sh codegen.sh && cd ../../)"
+	@echo -e "codegen    \t : $(shell cd ./api && pwd && sh codegen.sh && cd ../)"
 
 # ----------- codegen end

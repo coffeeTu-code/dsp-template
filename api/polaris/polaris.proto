@@ -7,14 +7,18 @@
 //*******************************************************************//
 syntax = "proto3";
 
+import "base/base.proto";
+
 package polaris;
+
+option go_package = "dsp-template/api/polaris/polaris";
 
 //**************************** PolarisRequest 输入协议 ***************************
 message PolarisRequest {
     // 1. 竞价请求的唯一ID。
     // [AS ]: 1) 请求ID
     // [DSP]: 1) RTB标准字段。bidRequest.id
-    string id = 1;
+    base.BaseRequest baserequest = 1;
 
     // 2. 竞价请求的adx名称。
     // [AS ]: 1) 请求AdExchange Name，特指"mintegral"
