@@ -12,7 +12,7 @@ import (
 	dsp_status "dsp-template/internal/app/dsp/dsp-status"
 	"dsp-template/internal/app/dsp/pipeline"
 	base_feature "dsp-template/internal/pkg/base-feature"
-	"dsp-template/internal/pkg/helper-microservice"
+	"dsp-template/pkg2/helper-microservice"
 )
 
 func NewAdxController() *AdxController {

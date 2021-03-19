@@ -3,7 +3,7 @@ package base_bidcache
 import (
 	"hash/crc64"
 
-	"dsp-template/api/base"
+	"dsp-template/api/backend"
 )
 
 type Config struct {
@@ -12,8 +12,8 @@ type Config struct {
 	Default      *ExchangeConfig            `toml:"default"`       // 默认的exchange设置
 	AdxConfig    map[string]*ExchangeConfig `toml:"adxconfig"`     // exchange设置
 	Runtime      *RuntimeConfig             `toml:"runtime"`       // 实时更新的配置
-	CacheDB      base.RedisConfig           `toml:"cachedb"`       // cache的db配置
-	RedisHystrix base.RedisHystrixConfig    `toml:"redis_hystrix"` // 使用hystrix来做熔断的配置
+	CacheDB      backend.RedisConfig        `toml:"cachedb"`       // cache的db配置
+	RedisHystrix backend.RedisHystrixConfig `toml:"redis_hystrix"` // 使用hystrix来做熔断的配置
 }
 
 type (

@@ -36,6 +36,11 @@ message BaseMetrics {
     string namespace = 3;
     string subsystem = 4;
 }
+
+message BaseConsul {
+    string addr = 1;
+    int32 interval = 2;
+}
 // ----- metrics End
 
 // ----- feature

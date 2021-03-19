@@ -1,11 +1,9 @@
-package dbstruct
-
-import "dsp-template/api/base"
+package base
 
 func NewFeature() *Feature {
 	return &Feature{
 		Imp:       &FImp{},
-		DeviceIds: &base.FDeviceIds{},
+		DeviceIds: &FDeviceIds{},
 		Device:    &FDevice{},
 		User:      &FUser{},
 		App:       &FApp{},
@@ -23,7 +21,7 @@ type Feature struct {
 	Size        []string
 	BidFloor    float64
 	Imp         *FImp
-	DeviceIds   *base.FDeviceIds
+	DeviceIds   *FDeviceIds
 	Device      *FDevice
 	User        *FUser
 	App         *FApp

@@ -5,11 +5,13 @@ import (
 	"strings"
 
 	"dsp-template/api/dbstruct"
+
+	"dsp-template/api/base"
 	dsp_config "dsp-template/internal/app/dsp/dsp-config"
 	dsp_context "dsp-template/internal/app/dsp/dsp-context"
 	dsp_status "dsp-template/internal/app/dsp/dsp-status"
-	abtesting "dsp-template/internal/pkg/helper-abtesting"
-	helper_crypto "dsp-template/internal/pkg/helper-crypto"
+	abtesting "dsp-template/pkg2/helper-abtesting"
+	helper_crypto "dsp-template/pkg2/helper-crypto"
 )
 
 func NewFlowDyeingPipeline() *FlowDyeingPipeline {
@@ -57,7 +59,7 @@ func DyeingABTestKV(ctx *dsp_context.DspContext) {
 	}
 }
 
-func hashkey(feature *dbstruct.Feature) string {
+func hashkey(feature *base.Feature) string {
 	var hashKey string
 	if hashKey = uniqDeviceId(feature.DeviceIds); hashKey != "" {
 		return hashKey
@@ -108,7 +110,7 @@ func validDeviceId(deviceId string) bool {
 	return false
 }
 
-func ipua(device *dbstruct.FDevice) string {
+func ipua(device *base.FDevice) string {
 	if len(device.UserAgent) == 0 {
 		return ""
 	}

@@ -3,7 +3,7 @@ package pipeline
 import (
 	"errors"
 
-	"dsp-template/api/dbstruct"
+	"dsp-template/api/base"
 	dsp_context "dsp-template/internal/app/dsp/dsp-context"
 	dsp_status "dsp-template/internal/app/dsp/dsp-status"
 	base_mediafilter "dsp-template/internal/pkg/base-mediafilter"
@@ -92,21 +92,21 @@ func writeFilterReason(ctx *dsp_context.DspContext, reason dsp_status.DspStatus)
 	ctx.ModelStatus = reason
 }
 
-func deviceTypeWhiteTableOption(feature *dbstruct.Feature) bool {
+func deviceTypeWhiteTableOption(feature *base.Feature) bool {
 	// read table
 
 	// if exchange in table; return true
 	return true
 }
 
-func deviceIDWhiteTableOption(feature *dbstruct.Feature) bool {
+func deviceIDWhiteTableOption(feature *base.Feature) bool {
 	// read table
 
 	// if exchange in table; return true
 	return true
 }
 
-func bidCacheTableOption(feature *dbstruct.Feature) bool {
+func bidCacheTableOption(feature *base.Feature) bool {
 	// read table
 
 	// if exchange in table; return true

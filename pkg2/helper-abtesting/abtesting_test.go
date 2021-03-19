@@ -1,7 +1,6 @@
 package abtesting
 
 import (
-	"context"
 	"fmt"
 	"hash/crc32"
 	"strconv"
@@ -104,17 +103,15 @@ func TestAbTesting_ToString(t *testing.T) {
 }
 
 func TestConsul(t *testing.T) {
-	ab, err := NewAbTesting("127.0.0.1:8500", "abtest/abtest")
-	e := ab.Init(context.Background())
-	fmt.Println(e)
+	err := NewAbTesting("127.0.0.1:8500", "abtest/abtest")
 	Convey("TestAbTesting_ToString", t, func() {
 		ShouldBeNil(err)
-		kv := ab.client.KV()
+		kv := APP().client.KV()
 		So(kv, ShouldNotBeNil)
 		So(err, ShouldBeNil)
 		fmt.Println(ExperimentsInfo)
 		for i := 0; i < 100; i++ {
-			m := ab.GetAbTesting(&FlowInfo{
+			m := APP().GetAbTesting(&FlowInfo{
 				HashKey: "1bcddsfaxsxxs",
 				AdType:  "b",
 			})
@@ -124,10 +121,8 @@ func TestConsul(t *testing.T) {
 }
 
 func TestAbTesting_GetAbTesting(t *testing.T) {
-	ab, err := NewAbTesting("18.197.217.185:8500", "abtest/abtest")
+	err := NewAbTesting("18.197.217.185:8500", "abtest/abtest")
 	Convey("TestAbTesting_ToString", t, func() {
-		So(err, ShouldBeNil)
-		err = ab.Init(context.Background())
 		So(err, ShouldBeNil)
 		flow := &FlowInfo{
 			Device:  "null",
@@ -141,7 +136,7 @@ func TestAbTesting_GetAbTesting(t *testing.T) {
 		a2, b2, c2 := 0, 0, 0
 		a3, b3, c3 := 0, 0, 0
 		for i := 0; i < 100000; i++ {
-			v := ab.GetAbTesting(flow)
+			v := APP().GetAbTesting(flow)
 			if v["test1"] == "expr1" {
 				a++
 			}
@@ -191,8 +186,7 @@ func TestAbTesting_GetAbTesting(t *testing.T) {
 }
 
 func BenchmarkAbTesting_GetAbTesting(b *testing.B) {
-	ab, _ := NewAbTesting("18.197.217.185:8500", "abtest/abtest")
-	_ = ab.Init(context.Background())
+	_ = NewAbTesting("18.197.217.185:8500", "abtest/abtest")
 	flow := &FlowInfo{
 		Device:  "null",
 		Region:  "vg",
@@ -204,7 +198,7 @@ func BenchmarkAbTesting_GetAbTesting(b *testing.B) {
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		for j := 0; j < 100000; j++ {
-			_ = ab.GetAbTesting(flow)
+			_ = APP().GetAbTesting(flow)
 		}
 	}
 	b.StopTimer()

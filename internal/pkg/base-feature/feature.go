@@ -2,11 +2,11 @@ package base_feature
 
 import (
 	"dsp-template/api/adx/madx"
-	"dsp-template/api/dbstruct"
+	"dsp-template/api/base"
 )
 
-func FeatureFormation(adx *madx.MOrtbRequest) *dbstruct.Feature {
-	feature := dbstruct.NewFeature()
+func FeatureFormation(adx *madx.MOrtbRequest) *base.Feature {
+	feature := base.NewFeature()
 
 	if adx.Ext == nil || len(adx.Ext.Exchange) == 0 {
 		return feature
@@ -29,7 +29,7 @@ func FeatureFormation(adx *madx.MOrtbRequest) *dbstruct.Feature {
 	return feature
 }
 
-func setDeviceFeature(adx *madx.MOrtbRequest, feature *dbstruct.Feature) {
+func setDeviceFeature(adx *madx.MOrtbRequest, feature *base.Feature) {
 	if adx.Device == nil {
 		return
 	}
@@ -45,7 +45,7 @@ func setDeviceFeature(adx *madx.MOrtbRequest, feature *dbstruct.Feature) {
 	feature.Device.TotalDisk = adx.Device.Ext.TotalDisk
 }
 
-func setUserFeature(adx *madx.MOrtbRequest, feature *dbstruct.Feature) {
+func setUserFeature(adx *madx.MOrtbRequest, feature *base.Feature) {
 	if adx.User == nil {
 		return
 	}
@@ -60,7 +60,7 @@ func setUserFeature(adx *madx.MOrtbRequest, feature *dbstruct.Feature) {
 	feature.User.SessionDuration = adx.User.Ext.SessionDuration
 }
 
-func setVideoFeature(adx *madx.MOrtbRequest, feature *dbstruct.Feature) {
+func setVideoFeature(adx *madx.MOrtbRequest, feature *base.Feature) {
 	if len(adx.Imp) == 0 || adx.Imp[0].Video == nil {
 		return
 	}
@@ -72,7 +72,7 @@ func setVideoFeature(adx *madx.MOrtbRequest, feature *dbstruct.Feature) {
 	}
 }
 
-func setImpFeature(adx *madx.MOrtbRequest, feature *dbstruct.Feature) {
+func setImpFeature(adx *madx.MOrtbRequest, feature *base.Feature) {
 	if len(adx.Imp) == 0 || adx.Imp[0].Ext == nil {
 		return
 	}

@@ -1,0 +1,45 @@
+{
+  "_id": "5dbfa25f31256ad3cfc5c6d3",
+  "campaignId": 999999999,
+  "advertiserId": 903,
+  "countryCode": [
+    "CN"
+  ],
+  "status": 1,
+  "packageName": "id1478595751",
+  "campaignType": 1,
+  "publisherId": 0,
+  "system": [
+    3,
+    5
+  ],
+  "mInventoryV2": {
+    "type": 2,
+    "iabCategory": {
+    },
+    "adtype": {
+    },
+    "adnAdtype": [
+      1,
+      2,
+      3,
+      4,
+      6,
+      7,
+      8,
+      9,
+      11,
+      10
+    ],
+    "units": []
+  },
+  "networkTypeV2": [
+    0,
+    10
+  ],
+  "source": 540,
+  "thirdParty": "Adjust",
+  "costType": 1,
+  "updated": 1577256868,
+  "updatedDate": "2019-12-25 14:54:28"
+}

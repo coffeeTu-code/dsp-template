@@ -1,4 +1,4 @@
-package base
+package backend
 
 type RedisConfig struct {
 	Host               string
@@ -26,12 +26,4 @@ type RedisHystrixConfig struct {
 	MaxConcurrentRequests int
 	ErrorPercentThreshold int
 	SleepWindow           int
-}
-
-type MongoConfig struct {
-	Url          string
-	DB           string
-	Table        string
-	BaseInterval int //全量更新数据周期，单位 s
-	IncInterval  int //增量更新数据周期，单位 s
 }

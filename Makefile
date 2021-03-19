@@ -11,9 +11,12 @@ all: codegen codeline
 codeline:
 	@echo -e "./api      \t : 功能代码 $(shell find ./api -name '*.go' | grep -v 'test.go' | xargs cat | wc -l) | 测试代码 $(shell find ./api -name '*.go' | grep 'test.go' | xargs cat | wc -l)"
 	@echo -e " -adx      \t : 功能代码 $(shell find ./api/adx -name '*.go' | grep -v 'test.go' | xargs cat | wc -l) | 测试代码 $(shell find ./api/adx -name '*.go' | grep 'test.go' | xargs cat | wc -l)"
+	@echo -e " -backend  \t : 功能代码 $(shell find ./api/backend -name '*.go' | grep -v 'test.go' | xargs cat | wc -l) | 测试代码 $(shell find ./api/backend -name '*.go' | grep 'test.go' | xargs cat | wc -l)"
 	@echo -e " -base     \t : 功能代码 $(shell find ./api/base -name '*.go' | grep -v 'test.go' | xargs cat | wc -l) | 测试代码 $(shell find ./api/base -name '*.go' | grep 'test.go' | xargs cat | wc -l)"
+	@echo -e " -dbstruct \t : 功能代码 $(shell find ./api/dbstruct -name '*.go' | grep -v 'test.go' | xargs cat | wc -l) | 测试代码 $(shell find ./api/dbstruct -name '*.go' | grep 'test.go' | xargs cat | wc -l)"
 	@echo -e " -dmp      \t : 功能代码 $(shell find ./api/dmp -name '*.go' | grep -v 'test.go' | xargs cat | wc -l) | 测试代码 $(shell find ./api/dmp -name '*.go' | grep 'test.go' | xargs cat | wc -l)"
 	@echo -e " -dsp      \t : 功能代码 $(shell find ./api/dsp -name '*.go' | grep -v 'test.go' | xargs cat | wc -l) | 测试代码 $(shell find ./api/dsp -name '*.go' | grep 'test.go' | xargs cat | wc -l)"
+	@echo -e " -enum     \t : 功能代码 $(shell find ./api/enum -name '*.go' | grep -v 'test.go' | xargs cat | wc -l) | 测试代码 $(shell find ./api/enum -name '*.go' | grep 'test.go' | xargs cat | wc -l)"
 	@echo -e " -juno     \t : 功能代码 $(shell find ./api/juno -name '*.go' | grep -v 'test.go' | xargs cat | wc -l) | 测试代码 $(shell find ./api/juno -name '*.go' | grep 'test.go' | xargs cat | wc -l)"
 	@echo -e " -polaris  \t : 功能代码 $(shell find ./api/polaris -name '*.go' | grep -v 'test.go' | xargs cat | wc -l) | 测试代码 $(shell find ./api/polaris -name '*.go' | grep 'test.go' | xargs cat | wc -l)"
 	@echo -e " -rank     \t : 功能代码 $(shell find ./api/rank -name '*.go' | grep -v 'test.go' | xargs cat | wc -l) | 测试代码 $(shell find ./api/rank -name '*.go' | grep 'test.go' | xargs cat | wc -l)"

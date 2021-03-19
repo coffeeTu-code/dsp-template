@@ -9,7 +9,7 @@ import (
 	"github.com/afex/hystrix-go/hystrix"
 	"github.com/go-redis/redis"
 
-	microservice_helper "dsp-template/internal/pkg/helper-microservice"
+	microservice_helper "dsp-template/pkg2/helper-microservice"
 )
 
 var defaultBidCache = NewBidCache()

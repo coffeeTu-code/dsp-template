@@ -1,0 +1,259 @@
+{
+  "_id": "5dbfa2f778ca51cb3b8bbb99",
+  "campaignId": 322464671,
+  "status": 1,
+  "source": 2,
+  "packageName": "",
+  "countryCode": "CN",
+  "sourceCreativeId": "2753976153",
+  "advertiserId": 903,
+  "content": {
+    "201": {
+      "270943873": {
+        "url": "http://cdn-adn.rayjump.com/v3/v/19/11/04/13/Iqb90Oo0-e62cfe29-5aca-46e1-a5e5-023062967d9a.mp4",
+        "videoLength": 18,
+        "videoSize": 761894,
+        "videoResolution": "1280x720",
+        "width": 1280,
+        "height": 720,
+        "videoTruncation": 1,
+        "watchMile": 100,
+        "bitrate": 334,
+        "screenShot": "http://cdn-adn.rayjump.com/cdn-adn/vhc/19/11/04/12/04/a01eaad0225bc3f6f807dfa56a4bebe7.jpg",
+        "orientation": 2,
+        "clarity": 1,
+        "cname": "yyybjl_gg_0927_ys_SZ_CN_1280X720_V_J.mp4",
+        "fMd5": "4b0a6cd71b882ebe316c9f845eceabc2",
+        "mime": "video/mp4",
+        "attribute": "",
+        "advCreativeId": "1800060626",
+        "creativeId": "2753977716",
+        "source": 2,
+        "templateType": 21003,
+        "score": 0,
+        "utime": 1575527771,
+        "ctime": 1572845477,
+        "uniqCid": 10
+      }
+    },
+    "401": {
+      "270940565": {
+        "value": "爷爷又不在",
+        "source": 1,
+        "fMd5": "67a44ed7877dcf97529489a7f76f1a01",
+        "mime": "text/plain",
+        "attribute": "",
+        "advCreativeId": "0",
+        "creativeId": "2753976467",
+        "templateType": 0,
+        "score": 51000,
+        "utime": 1572840898,
+        "ctime": 1572840898
+      }
+    },
+    "407": {
+      "270940566": {
+        "value": "爷爷又不在",
+        "source": 1,
+        "fMd5": "67a44ed7877dcf97529489a7f76f1a01",
+        "mime": "text/plain",
+        "attribute": "",
+        "advCreativeId": "0",
+        "creativeId": "2753976468",
+        "templateType": 0,
+        "score": 51000,
+        "utime": 1572840898,
+        "ctime": 1572840898
+      }
+    },
+    "402": {
+      "270940567": {
+        "value": "来咯来咯，顽皮的爷爷来咯！面对爷爷这样的超级老顽童，我真的是瑞斯拜，一把年纪却最爱捉迷藏。想办法化解爷爷的恶作剧，回归平静的正常生活吧。 【游戏特色】【奇葩游戏思路，让你大呼过瘾！",
+        "source": 1,
+        "fMd5": "55dcf5f652f9b1fb92920558535de9af",
+        "mime": "text/plain",
+        "attribute": "",
+        "advCreativeId": "0",
+        "creativeId": "2753976469",
+        "templateType": 0,
+        "score": 51000,
+        "utime": 1572840898,
+        "ctime": 1572840898
+      }
+    },
+    "403": {
+      "270940568": {
+        "value": 4,
+        "fMd5": "a87ff679a2f3e71d9181a67b7542122c",
+        "mime": "text/plain",
+        "attribute": "",
+        "advCreativeId": "0",
+        "creativeId": "2753976470",
+        "source": 1,
+        "templateType": 0,
+        "score": 51000,
+        "utime": 1572840898,
+        "ctime": 1572840898
+      }
+    },
+    "404": {
+      "270940569": {
+        "value": "Install",
+        "fMd5": "349838fb1d851d3e2014b9fe39203275",
+        "mime": "text/plain",
+        "attribute": "",
+        "advCreativeId": "0",
+        "creativeId": "2753976471",
+        "source": 1,
+        "templateType": 0,
+        "score": 51000,
+        "utime": 1572840898,
+        "ctime": 1572840898
+      }
+    },
+    "405": {
+      "270940570": {
+        "value": "http://cdn-adn.rayjump.com/cdn-adn/v2/dmp/19/10/21/00/17/5dac88ab3f0a9.jpg",
+        "cname": "",
+        "fMd5": "9d9a86e907ff5b35d5e3ea1478d7b25d",
+        "mime": "text/plain",
+        "attribute": "",
+        "advCreativeId": "0",
+        "creativeId": "2753976472",
+        "source": 1,
+        "templateType": 0,
+        "score": 51000,
+        "utime": 1572840898,
+        "ctime": 1572840898
+      }
+    },
+    "50002": {
+      "270940571": {
+        "url": "play.rayjump.com/pl/19/09/25/m_zh-cn_yeyeyoubuzai_KrWOep5yn_ios_ty-334a363e5c780ab102e1e131273d4a96.zip?md5filename=334a363e5c780ab102e1e131273d4a96&foldername=m_zh-cn_yeyeyoubuzai_KrWOep5yn_ios_ty",
+        "orientation": 0,
+        "platform": 2,
+        "minOs": 9000000,
+        "fMd5": "334a363e5c780ab102e1e131273d4a96",
+        "mime": "application/zip",
+        "attribute": "",
+        "advCreativeId": "0",
+        "creativeId": "2753976473",
+        "source": 1,
+        "templateType": 0,
+        "score": 51000,
+        "utime": 1572840898,
+        "ctime": 1572840898
+      }
+    },
+    "61002": {
+      "270940572": {
+        "url": "play.rayjump.com/pl/19/09/30/m_zh-cn_grandpaNotHere_TiBcIp5iy_ios_ty-171c920f7193a6af69795dd35a3caf12.zip?md5filename=171c920f7193a6af69795dd35a3caf12&foldername=m_zh-cn_grandpaNotHere_TiBcIp5iy_ios_ty",
+        "orientation": 0,
+        "platform": 2,
+        "minOs": 9000000,
+        "protocol": 0,
+        "fMd5": "171c920f7193a6af69795dd35a3caf12",
+        "mime": "application/zip",
+        "attribute": "",
+        "advCreativeId": "0",
+        "creativeId": "2753976474",
+        "source": 1,
+        "templateType": 0,
+        "score": 51000,
+        "utime": 1572840898,
+        "ctime": 1572840898
+      }
+    },
+    "406": {
+      "285100523": {
+        "value": 92,
+        "fMd5": "92cc227532d17e56e07902b254dfad10",
+        "mime": "text/plain",
+        "attribute": "",
+        "advCreativeId": "0",
+        "creativeId": "2753976158",
+        "source": 2,
+        "templateType": 0,
+        "score": 41000,
+        "utime": 1577189580,
+        "ctime": 1577189580
+      }
+    },
+    "102": {
+      "285100644": {
+        "url": "http://cdn-adn.rayjump.com/cdn-adn/v2/image/jpeg/5da572ee0181c.jpeg",
+        "resolution": "300x250",
+        "cname": "yyybz_mtg_1015_wfzs_cn_300x250_mx_1995.jpg",
+        "width": 0,
+        "height": 0,
+        "fMd5": "a40b40adddf91ced1fe43a48203c2b59",
+        "mime": "image/jpeg",
+        "attribute": "",
+        "advCreativeId": "1800060602",
+        "creativeId": "2753976162",
+        "source": 2,
+        "templateType": 0,
+        "score": 51000,
+        "utime": 1577189593,
+        "ctime": 1577189593
+      }
+    },
+    "71001": {
+      "285100655": {
+        "tagCode": "http://cdn-adn.rayjump.com/cdn-adn/v2/image/jpeg/5da572f6d9aa2.jpeg",
+        "resolution": "800x480",
+        "cname": "yyybz_mtg_1015_wfzs_cn_800x480_mx_1995.jpg",
+        "width": 0,
+        "height": 0,
+        "fMd5": "797e3049aa9fd2c5bea032fd49225cd8",
+        "mime": "image/jpeg",
+        "attribute": "",
+        "advCreativeId": "1800060613",
+        "creativeId": "2753976173",
+        "source": 2,
+        "templateType": 0,
+        "score": 51000,
+        "utime": 1577189593,
+        "ctime": 1577189593
+      }
+    },
+    "11049": {
+      "285100677": {
+        "url": "http://cdn-adn.rayjump.com/cdn-adn/creativesync/19/11/04/12/03/5dbfa2fe38e2b.jpg",
+        "resolution": "120x120",
+        "cname": "icon_512x512",
+        "width": 0,
+        "height": 0,
+        "fMd5": "971c44891c99dea0dbc203fb940ccd1d",
+        "mime": "image/jpeg",
+        "attribute": "",
+        "advCreativeId": "1800060601",
+        "creativeId": "2753976191",
+        "source": 2,
+        "templateType": 0,
+        "score": 51000,
+        "utime": 1577189594,
+        "ctime": 1577189594
+      },
+      "285100681": {
+        "url": "http://cdn-adn.rayjump.com/cdn-adn/creativesync/19/11/22/17/54/5dd7b047b1c07.jpg",
+        "resolution": "120x120",
+        "cname": "id1478595751.png",
+        "width": 0,
+        "height": 0,
+        "fMd5": "37f8a41b81d1d1574911c0c73226411a",
+        "mime": "image/jpeg",
+        "attribute": "",
+        "advCreativeId": "5d720a094cd412df6e36dbc68180dcde",
+        "creativeId": "2762250368",
+        "source": 2,
+        "templateType": 0,
+        "score": 51000,
+        "utime": 1577189594,
+        "ctime": 1577189594
+      }
+    }
+  },
+  "updated": 1577207839,
+  "updatedDate": "2019-12-25 01:17:19"
+}

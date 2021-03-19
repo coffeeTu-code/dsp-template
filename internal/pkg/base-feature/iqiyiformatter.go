@@ -3,22 +3,22 @@ package base_feature
 import (
 	"dsp-template/api/adx/madx"
 	"dsp-template/api/base"
-	"dsp-template/api/dbstruct"
+	"dsp-template/api/enum"
 )
 
 func init() {
-	formatterList[base.ExchangeIqiyi] = &IqiyiFormatter{}
+	formatterList[enum.ExchangeIqiyi] = &IqiyiFormatter{}
 }
 
 type IqiyiFormatter struct {
 }
 
-func (f *IqiyiFormatter) FeatureFormation(adx *madx.MOrtbRequest, feature *dbstruct.Feature) {
+func (f *IqiyiFormatter) FeatureFormation(adx *madx.MOrtbRequest, feature *base.Feature) {
 	f.setImpFeature(adx, feature)
 }
 
 // SetImpExtFeature 新增imp.ext.SourceID/imp.ext.SourceURL 两个特性，标识爱奇艺站点信息.
-func (f *IqiyiFormatter) setImpFeature(adx *madx.MOrtbRequest, feature *dbstruct.Feature) {
+func (f *IqiyiFormatter) setImpFeature(adx *madx.MOrtbRequest, feature *base.Feature) {
 	if len(adx.Imp) == 0 || adx.Imp[0].Ext == nil {
 		return
 	}

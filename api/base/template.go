@@ -1,4 +1,4 @@
-package dbstruct
+package base
 
 type Template struct {
 	ID     string          `json:"id"`     //模板id

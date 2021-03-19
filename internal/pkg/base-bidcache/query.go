@@ -6,8 +6,8 @@ import (
 	"strings"
 	"time"
 
-	"dsp-template/api/dbstruct"
-	helper_crypto "dsp-template/internal/pkg/helper-crypto"
+	"dsp-template/api/base"
+	helper_crypto "dsp-template/pkg2/helper-crypto"
 )
 
 type QueryParser interface {
@@ -23,7 +23,7 @@ type QueryParser interface {
 	GetAdtype() string
 }
 
-func BuildQuery(feature *dbstruct.Feature, adxCfg *ExchangeConfig) (*QueryInfo, error) {
+func BuildQuery(feature *base.Feature, adxCfg *ExchangeConfig) (*QueryInfo, error) {
 	if feature.DeviceIds == nil || feature.App == nil || adxCfg == nil {
 		return nil, errors.New("")
 	}
@@ -267,7 +267,7 @@ func (this *QueryInfo) GetCacheKey() string {
 	return this.cacheKey
 }
 
-func BuildRawQuery(feature *dbstruct.Feature, adxCfg *ExchangeConfig) *RawQueryParser {
+func BuildRawQuery(feature *base.Feature, adxCfg *ExchangeConfig) *RawQueryParser {
 	return &RawQueryParser{
 		Googleadid:     feature.DeviceIds.Googleadid,
 		Exchange:       feature.Exchange,

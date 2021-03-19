@@ -3,7 +3,7 @@ package dsp_config
 import "dsp-template/api/base"
 
 type DspConfig struct {
-	ConsulConfig  base.ConsulConfig
+	ConsulConfig  base.BaseConsul
 	DebugConfig   DebugConfig
 	ServiceConfig ServiceConfig
 }

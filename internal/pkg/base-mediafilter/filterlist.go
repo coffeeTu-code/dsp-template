@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	"dsp-template/api/base"
-	"dsp-template/api/dbstruct"
+	"dsp-template/api/enum"
 	base_bidcache "dsp-template/internal/pkg/base-bidcache"
 )
 
@@ -26,14 +26,14 @@ import (
 // filter func 通用过滤逻辑
 // return true 过滤流量
 // return false 保留流量
-type MediaFilter func(feature *dbstruct.Feature) bool
+type MediaFilter func(feature *base.Feature) bool
 
 // options 自定义过滤条件
 // return true 保留流量
 // return false 过滤流量
-type WhiteTableOption func(feature *dbstruct.Feature) bool
+type WhiteTableOption func(feature *base.Feature) bool
 
-func reserved(feature *dbstruct.Feature, options ...WhiteTableOption) bool {
+func reserved(feature *base.Feature, options ...WhiteTableOption) bool {
 	for i := range options {
 		if options[i](feature) {
 			return true
@@ -43,7 +43,7 @@ func reserved(feature *dbstruct.Feature, options ...WhiteTableOption) bool {
 }
 
 func MediaHardFilterSize(options ...WhiteTableOption) MediaFilter {
-	return func(feature *dbstruct.Feature) bool {
+	return func(feature *base.Feature) bool {
 		if reserved(feature, options...) {
 			return false
 		}
@@ -55,14 +55,14 @@ func MediaHardFilterSize(options ...WhiteTableOption) MediaFilter {
 }
 
 func MediaHardFilterTraffic(options ...WhiteTableOption) MediaFilter {
-	return func(feature *dbstruct.Feature) bool {
+	return func(feature *base.Feature) bool {
 		if reserved(feature, options...) {
 			return false
 		}
 		if len(feature.Size) > 0 && feature.Size[0] == "0x0" {
 			switch feature.Exchange {
-			case base.ExchangeOppo:
-				return feature.AdType != base.AdTypeVideoRewarded && feature.AdType != base.AdTypeVideoInterstitial
+			case enum.ExchangeOppo:
+				return feature.AdType != enum.AdTypeVideoRewarded && feature.AdType != enum.AdTypeVideoInterstitial
 			}
 		}
 		return false
@@ -70,7 +70,7 @@ func MediaHardFilterTraffic(options ...WhiteTableOption) MediaFilter {
 }
 
 func MediaHardFilterCountry(options ...WhiteTableOption) MediaFilter {
-	return func(feature *dbstruct.Feature) bool {
+	return func(feature *base.Feature) bool {
 		if reserved(feature, options...) {
 			return false
 		}
@@ -79,7 +79,7 @@ func MediaHardFilterCountry(options ...WhiteTableOption) MediaFilter {
 }
 
 func MediaHardFilterUA(options ...WhiteTableOption) MediaFilter {
-	return func(feature *dbstruct.Feature) bool {
+	return func(feature *base.Feature) bool {
 		if reserved(feature, options...) {
 			return false
 		}
@@ -104,7 +104,7 @@ func hasDeviceId(deviceIds *base.FDeviceIds) bool {
 }
 
 func MediaHardFilterDeviceType(options ...WhiteTableOption) MediaFilter {
-	return func(feature *dbstruct.Feature) bool {
+	return func(feature *base.Feature) bool {
 		if reserved(feature, options...) {
 			return false
 		}
@@ -112,16 +112,16 @@ func MediaHardFilterDeviceType(options ...WhiteTableOption) MediaFilter {
 	}
 }
 
-func isNonDeviceType(device *dbstruct.FDevice) bool {
+func isNonDeviceType(device *base.FDevice) bool {
 	switch device.DeviceType {
-	case base.DeviceTypeMobileTablet, base.DeviceTypePhone, base.DeviceTypeTablet:
+	case enum.DeviceTypeMobileTablet, enum.DeviceTypePhone, enum.DeviceTypeTablet:
 		return false
 	}
 	return true
 }
 
 func MediaHardFilterBannerBType(options ...WhiteTableOption) MediaFilter {
-	return func(feature *dbstruct.Feature) bool {
+	return func(feature *base.Feature) bool {
 		if reserved(feature, options...) {
 			return false
 		}
@@ -129,9 +129,9 @@ func MediaHardFilterBannerBType(options ...WhiteTableOption) MediaFilter {
 	}
 }
 
-func isBlockImage(imp *dbstruct.FImp) bool {
+func isBlockImage(imp *base.FImp) bool {
 	for _, btype := range imp.BannerBType {
-		if btype == base.BannerBTypeBANNER {
+		if btype == enum.BannerBTypeBANNER {
 			return true
 		}
 	}
@@ -139,16 +139,16 @@ func isBlockImage(imp *dbstruct.FImp) bool {
 }
 
 func MediaHardFilterPlatform(options ...WhiteTableOption) MediaFilter {
-	return func(feature *dbstruct.Feature) bool {
+	return func(feature *base.Feature) bool {
 		if reserved(feature, options...) {
 			return false
 		}
-		return feature.Platform != base.PlatformAndroid && feature.Platform != base.PlatformIos
+		return feature.Platform != enum.PlatformAndroid && feature.Platform != enum.PlatformIos
 	}
 }
 
 func MediaHardFilterDeviceID(options ...WhiteTableOption) MediaFilter {
-	return func(feature *dbstruct.Feature) bool {
+	return func(feature *base.Feature) bool {
 		if reserved(feature, options...) {
 			return false
 		}
@@ -169,7 +169,7 @@ func isPseudoDeviceID(deviceIds *base.FDeviceIds) bool {
 }
 
 func MediaHardFilterBidCache(options ...WhiteTableOption) MediaFilter {
-	return func(feature *dbstruct.Feature) bool {
+	return func(feature *base.Feature) bool {
 		if reserved(feature, options...) {
 			return false
 		}
@@ -177,7 +177,7 @@ func MediaHardFilterBidCache(options ...WhiteTableOption) MediaFilter {
 	}
 }
 
-func isBidCached(feature *dbstruct.Feature) bool {
+func isBidCached(feature *base.Feature) bool {
 	rawParse, err := base_bidcache.BuildQuery(feature, base_bidcache.ReadExchangeConfig(feature.Exchange))
 	if err != nil {
 		return false // 不过滤
@@ -190,7 +190,7 @@ func isBidCached(feature *dbstruct.Feature) bool {
 }
 
 func MediaSoftFilterPackageName(options ...WhiteTableOption) MediaFilter {
-	return func(feature *dbstruct.Feature) bool {
+	return func(feature *base.Feature) bool {
 		if reserved(feature, options...) {
 			return false
 		}
@@ -198,9 +198,9 @@ func MediaSoftFilterPackageName(options ...WhiteTableOption) MediaFilter {
 			return true
 		}
 		switch feature.Platform {
-		case base.PlatformAndroid:
+		case enum.PlatformAndroid:
 			return !isAndroidPackageName(feature.App.PackageName)
-		case base.PlatformIos:
+		case enum.PlatformIos:
 			return !isIosPackageName(feature.App.PackageName)
 		default:
 			return false // 非 app 类不过滤
@@ -220,7 +220,7 @@ func isAndroidPackageName(pkgName string) bool {
 }
 
 func TrafficRelease(options ...WhiteTableOption) MediaFilter {
-	return func(feature *dbstruct.Feature) bool {
+	return func(feature *base.Feature) bool {
 		if reserved(feature, options...) {
 			return false
 		}
@@ -229,7 +229,7 @@ func TrafficRelease(options ...WhiteTableOption) MediaFilter {
 }
 
 func AntiCheat(options ...WhiteTableOption) MediaFilter {
-	return func(feature *dbstruct.Feature) bool {
+	return func(feature *base.Feature) bool {
 		if reserved(feature, options...) {
 			return false
 		}
@@ -259,7 +259,7 @@ func isBlackApp(pkgName string) bool {
 }
 
 func LowHistoryROI(options ...WhiteTableOption) MediaFilter {
-	return func(feature *dbstruct.Feature) bool {
+	return func(feature *base.Feature) bool {
 		if reserved(feature, options...) {
 			return false
 		}
