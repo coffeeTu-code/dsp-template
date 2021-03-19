@@ -1,6 +1,10 @@
 # dsp-template
 dsp 模版
 
+# 微服务构想
+
+![微服务构想](./assets/微服务构想.png)
+
 # Go 项目结构规范
 
 https://www.jianshu.com/p/4726b9ac5fb1
