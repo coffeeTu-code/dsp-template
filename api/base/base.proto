@@ -61,3 +61,6 @@ message FDeviceIds {
 
 // ----- feature End
 
+service BaseService {
+    rpc FindBase (BaseRequest) returns (BaseResponse);
+}

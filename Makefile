@@ -4,7 +4,7 @@ GIT_TAG=$(shell git describe --tags)
 GIT_AUTHOR=$(shell git show -s --format=%an)
 SHELL:=/bin/bash
 
-all: codegen codeline
+all: codegen
 
 # ----------- codeline
 .PHONY: codeline
